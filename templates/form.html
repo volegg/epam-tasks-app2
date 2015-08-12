@@ -6,7 +6,7 @@
     <title>Form</title>
 </head>
 <body>
-    <form method="post" action="/items">
+    <form name="addItem" method="post" action="/items">
         <label>
             Name:
             <input type="text" name="name" />
@@ -19,7 +19,36 @@
             Phone:
             <input type="text" name="phone" />
         </label>
-        <button type="submit">Submit</button>
+        <button name="btnSubmit"  type="submit">Add</button>
     </form>
+    
+    <div id="items-table-wrapper">
+    </div>
+
 </body>
+
+<script language="JavaScript">
+
+    document.forms.addItem.onsubmit = onAddItemSubmit;
+
+    function onAddItemSubmit(){
+        var formData = getFromDataURI(this);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/items");
+        xhr.send(formData);
+        return false;
+    }
+
+    function getFromDataURI(form){
+        var res;
+        res = 'name=' + encodeURIComponent(form.name.value);
+        res += '&email=' + encodeURIComponent(form.email.value);
+        res += '&phone=' + encodeURIComponent(form.phone.value);
+        return res;
+    }
+
+</script>
+
 </html>
+
+
