@@ -17,7 +17,6 @@ exports.getAction = function (request, response) {
 
 exports.postAction = function (request, response, pathname, postData) {
     postData = qs.parse(postData);
-
     fs.readFile(config.database.path, function (err, data) {
         data = err || !data ? [] : JSON.parse(data.toString('utf8'));
         postData.id = new Date().toISOString().replace(/[^\d]/g, '');
@@ -32,7 +31,7 @@ exports.postAction = function (request, response, pathname, postData) {
 
             } else {
                 response.writeHead(200, {'Content-Type': 'application/json'});
-                response.end(JSON.stringify(postData));
+                fs.createReadStream(config.database.path).pipe(response);
             }
         });
     });
