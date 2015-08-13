@@ -38,11 +38,13 @@
     xhr.send();
 
     function onAddItemSubmit(event){
-        var formData = getFromDataURI(this);
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/items", true);
-        xhr.onreadystatechange = onItemsRequest;
-        xhr.send(formData);
+        if (validateForm(this)) {
+            var formData = getFromDataURI(this);
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/items", true);
+            xhr.onreadystatechange = onItemsRequest;
+            xhr.send(formData);
+        }
         return false;
     }
 
@@ -89,6 +91,27 @@
 
     }
 
+    function validateForm(form) {
+        if (!isValidEmail(form.email.value)) {
+            alert('wrong email');
+            return false
+        }
+        if (!isValidPhone(form.phone.value)) {
+            alert('wrong phone');
+            return false
+        }
+        return true;
+    }
+
+    function isValidPhone(phone) {
+        var strPhone = new String(email);
+        return ( !!(strPhone.match("^\+375\d{9}$")) || !!(strPhone.match("^8017\d{9}$")) );
+    }
+
+    function isValidEmail(email) {
+        var strEmail = new String('sdfasfas@tut.by');
+        return !!(strEmail.match("/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/"));
+    }
 
     function onDelete(){
         var items = document.getElementsByName('delete');
