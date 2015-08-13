@@ -1,5 +1,9 @@
 #How to start
 
+##Requirements
+
+- [NodeJS](https://nodejs.org/download/)
+
 ##Register Github account
 
 [Join to Github](https://github.com/join)
@@ -17,6 +21,12 @@ git checkout -b YOUR_NAME
 ```
 
 ##Start app
+
+```
+npm start
+```
+
+-OR-
 
 ```
 node app.js
