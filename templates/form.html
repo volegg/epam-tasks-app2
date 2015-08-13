@@ -7,15 +7,15 @@
 </head>
 <body>
     <form name="addItem" method="post" action="/items">
-        <label>
+        <label id="name-label">
             Name:
             <input type="text" name="name" />
         </label>
-        <label>
+        <label id="email-label">
             Email:
             <input type="text" name="email" />
         </label>
-        <label>
+        <label id="phone-label" >
             Phone:
             <input type="text" name="phone" />
         </label>
@@ -30,6 +30,7 @@
 <script language="JavaScript">
 
     document.forms.addItem.onsubmit = onAddItemSubmit;
+   // document.getElementById('phone-label').appendChild(document.createElement('div')).innerHTML = 'aaaa';
 
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "/items", true);
