@@ -31,12 +31,47 @@
 
     document.forms.addItem.onsubmit = onAddItemSubmit;
 
-    function onAddItemSubmit(){
+    function onAddItemSubmit(event){
         var formData = getFromDataURI(this);
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/items");
+        xhr.open("POST", "/items", true);
+        xhr.onreadystatechange = onItemsRequest;
         xhr.send(formData);
         return false;
+    }
+
+    function onItemsRequest() {
+        if (this.readyState != 4) return;
+
+        if (this.status != 200) {
+            console.error(this.status + ': ' + xhr.statusText);
+        } else {
+            var items = JSON.parse(this.responseText);
+            console.debug(items);
+            if (!!items) {
+                var tableWrapper = document.getElementById('items-table-wrapper');
+                tableWrapper.innerHTML = '';
+                var table = document.createElement('table');
+                var headerRow = document.createElement('tr');
+                headerRow.appendChild(document.createElement('th')).innerText = 'id';
+                headerRow.appendChild(document.createElement('th')).innerText = 'name';
+                headerRow.appendChild(document.createElement('th')).innerText = 'phone';
+                headerRow.appendChild(document.createElement('th')).innerText = 'email';
+                table.appendChild(headerRow);
+                items.forEach(function(item, i, arr){
+                    var row = document.createElement('tr');
+                    row.appendChild(document.createElement('td')).innerText = item.id;
+                    row.appendChild(document.createElement('td')).innerText = item.name;
+                    row.appendChild(document.createElement('td')).innerText = item.phone;
+                    row.appendChild(document.createElement('td')).innerText = item.email;
+                    table.appendChild(row);
+                })
+                tableWrapper.appendChild(table);
+                console.debug(tableWrapper);
+            }
+
+        }
+
     }
 
     function getFromDataURI(form){
