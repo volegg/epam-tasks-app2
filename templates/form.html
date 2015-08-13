@@ -44,15 +44,15 @@
         if (this.readyState != 4) return;
 
         if (this.status != 200) {
-            console.error(this.status + ': ' + xhr.statusText);
+            console.error(this.status + ': ' + this.statusText);
         } else {
             var items = JSON.parse(this.responseText);
-            console.debug(items);
             if (!!items) {
                 var tableWrapper = document.getElementById('items-table-wrapper');
                 tableWrapper.innerHTML = '';
                 var table = document.createElement('table');
                 var headerRow = document.createElement('tr');
+                headerRow.appendChild(document.createElement('th')).innerText = '';
                 headerRow.appendChild(document.createElement('th')).innerText = 'id';
                 headerRow.appendChild(document.createElement('th')).innerText = 'name';
                 headerRow.appendChild(document.createElement('th')).innerText = 'phone';
@@ -60,17 +60,58 @@
                 table.appendChild(headerRow);
                 items.forEach(function(item, i, arr){
                     var row = document.createElement('tr');
+                    var checkbox = document.createElement('input');
+                    checkbox.setAttribute('type', 'checkbox');
+                    checkbox.setAttribute('name', 'delete');
+                    checkbox.setAttribute('value',item.id);
+                    row.appendChild(checkbox);
                     row.appendChild(document.createElement('td')).innerText = item.id;
                     row.appendChild(document.createElement('td')).innerText = item.name;
                     row.appendChild(document.createElement('td')).innerText = item.phone;
                     row.appendChild(document.createElement('td')).innerText = item.email;
                     table.appendChild(row);
-                })
+                });
                 tableWrapper.appendChild(table);
+                btnDelete = document.createElement('input');
+                btnDelete.setAttribute('type', 'button');
+                btnDelete.setAttribute('value', 'Delete');
+                btnDelete.onclick = onDelete;
+                tableWrapper.appendChild(btnDelete);
             }
 
         }
 
+    }
+
+
+    function onDelete(){
+        var items = document.getElementsByName('delete');
+        var request = '';
+        var first = true;
+
+        for (var i=0; i<items.length; i++) {
+            if (items[i].checked){
+                if (!first) {
+                    request += ',';
+                }
+                else {
+                    first = false;
+                }
+
+                request += items[i].value;
+
+            }
+        };
+
+        if(!!request) {
+            request = '/items?id=' + request + '';
+            var xhr = new XMLHttpRequest();
+            xhr.open("DELETE", request , true);
+            xhr.onreadystatechange = onItemsRequest;
+            xhr.send('');
+        }
+
+        return false;
     }
 
     function getFromDataURI(form){

@@ -22,7 +22,6 @@ exports.postAction = function (request, response, pathname, postData) {
         postData.id = new Date().toISOString().replace(/[^\d]/g, '');
         postData.phone = parseInt(postData.phone, 10);
         data.push(postData);
-
         fs.writeFile(config.database.path, JSON.stringify(data), function (err) {
             if (err) {
                 console.log(err);
@@ -64,7 +63,7 @@ exports.deleteAllAction = function (request, response, pathname) {
 
                 } else {
                     response.writeHead(200, {'Content-Type': 'application/json'});
-                    response.end(JSON.stringify(deletedItems));
+                    fs.createReadStream(config.database.path).pipe(response);
                 }
             });
         });
