@@ -4,22 +4,208 @@
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
     <title>Form</title>
+    <style>
+        .error-message {
+            color: red;
+        }
+
+        label {
+            display: inline-block;
+            vertical-align: top;
+            width: 250px;
+        }
+
+    </style>
 </head>
 <body>
-    <form method="post" action="/items">
-        <label>
+    <form name="addItem" method="post" action="/items">
+        <label id="name-label">
             Name:
             <input type="text" name="name" />
         </label>
-        <label>
+        <label id="email-label">
             Email:
             <input type="text" name="email" />
         </label>
-        <label>
+        <label id="phone-label" >
             Phone:
             <input type="text" name="phone" />
         </label>
-        <button type="submit">Submit</button>
+        <button name="btnSubmit"  type="submit">Add</button>
     </form>
+    
+    <div id="items-table-wrapper">
+    </div>
+
 </body>
+
+<script language="JavaScript">
+
+    var form = document.forms.addItem;
+    form.onsubmit = onAddItemSubmit;
+    form.email.onchange = function(){validateForm(form)};
+    form.phone.onchange = function(){validateForm(form)};
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "/items", true);
+    xhr.onreadystatechange = onItemsRequest;
+    xhr.send();
+
+    function onAddItemSubmit(event){
+        if (validateForm(this)) {
+            var formData = getFromDataURI(this);
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/items", true);
+            xhr.onreadystatechange = onAddRequest;
+            xhr.send(formData);
+        }
+        return false;
+    }
+
+    function addItemToTable(item, table) {
+        var row = document.createElement('tr');
+        var checkbox = document.createElement('input');
+        checkbox.setAttribute('type', 'checkbox');
+        checkbox.setAttribute('name', 'delete');
+        checkbox.setAttribute('value',item.id);
+        row.appendChild(checkbox);
+        row.appendChild(document.createElement('td')).innerText = table.childNodes.length;
+        row.appendChild(document.createElement('td')).innerText = item.id;
+        row.appendChild(document.createElement('td')).innerText = item.name;
+        row.appendChild(document.createElement('td')).innerText = item.phone;
+        row.appendChild(document.createElement('td')).innerText = item.email;
+        table.appendChild(row);
+    }
+
+    function refreshTable(items) {
+        var tableWrapper = document.getElementById('items-table-wrapper');
+        tableWrapper.innerHTML = '';
+        var table = document.createElement('table');
+        table.setAttribute('id','items-table');
+        var headerRow = document.createElement('tr');
+        headerRow.appendChild(document.createElement('th')).innerText = '';
+        headerRow.appendChild(document.createElement('th')).innerText = 'N';
+        headerRow.appendChild(document.createElement('th')).innerText = 'id';
+        headerRow.appendChild(document.createElement('th')).innerText = 'name';
+        headerRow.appendChild(document.createElement('th')).innerText = 'phone';
+        headerRow.appendChild(document.createElement('th')).innerText = 'email';
+        table.appendChild(headerRow);
+        items.forEach(function(item, i, arr){
+            addItemToTable(item,table);
+        });
+        tableWrapper.appendChild(table);
+        btnDelete = document.createElement('input');
+        btnDelete.setAttribute('type', 'button');
+        btnDelete.setAttribute('value', 'Delete');
+        btnDelete.onclick = onDelete;
+        tableWrapper.appendChild(btnDelete);
+    }
+
+    function onAddRequest() {
+        if (this.readyState != 4) return;
+
+        if (this.status != 200) {
+            console.error(this.status + ': ' + this.statusText);
+        } else {
+            var item = JSON.parse(this.responseText);
+            if (!!item) {
+                var table = document.getElementById('items-table');
+                addItemToTable(item, table);
+            }
+        }
+    }
+
+    function onItemsRequest() {
+        if (this.readyState != 4) return;
+
+        if (this.status != 200) {
+            console.error(this.status + ': ' + this.statusText);
+        } else {
+            var items = JSON.parse(this.responseText);
+            if (!!items) {
+                refreshTable(items);
+            }
+
+        }
+    }
+
+    function clearMessages() {
+        var messages = document.getElementsByClassName('error-message');
+        for (var i=0; i<messages.length;) {
+            messages[i].parentNode.removeChild(messages[i]);
+        };
+    }
+
+    function validateForm(form) {
+        clearMessages();
+        var res = true;
+        if (!isValidEmail(form.email.value)) {
+            setErrorMessage('email-label', 'Email format is incorrect');;
+            res = false;
+        }
+
+        if (!isValidPhone(form.phone.value)) {
+            setErrorMessage('phone-label', 'Phone format is incorrect');
+            res = false
+        }
+        return res;
+    }
+
+    function setErrorMessage(wrapperId, message) {
+        messageSpan = document.createElement('span');
+        messageSpan.innerText = message;
+        messageSpan.setAttribute('class', 'error-message');
+        document.getElementById(wrapperId).appendChild(messageSpan);
+    }
+
+    function isValidPhone(phone) {
+        return (!!phone.match(/^\+375\d{9}$/) || !!phone.match(/^8017\d{7}$/)) ;
+    }
+
+    function isValidEmail(email) {
+        return !!(email.match(/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/));
+    }
+
+    function onDelete(){
+        var items = document.getElementsByName('delete');
+        var request = '';
+        var first = true;
+
+        for (var i=0; i<items.length; i++) {
+            if (items[i].checked){
+                if (!first) {
+                    request += ',';
+                }
+                else {
+                    first = false;
+                }
+
+                request += items[i].value;
+
+            }
+        };
+
+        if(!!request) {
+            request = '/items?id=' + request + '';
+            var xhr = new XMLHttpRequest();
+            xhr.open("DELETE", request , true);
+            xhr.onreadystatechange = onItemsRequest;
+            xhr.send('');
+        }
+
+        return false;
+    }
+
+    function getFromDataURI(form){
+        var res;
+        res = 'name=' + encodeURIComponent(form.name.value);
+        res += '&email=' + encodeURIComponent(form.email.value);
+        res += '&phone=' + encodeURIComponent(form.phone.value);
+        return res;
+    }
+
+</script>
+
 </html>
+
+
