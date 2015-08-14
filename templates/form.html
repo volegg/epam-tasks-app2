@@ -41,7 +41,10 @@
 
 <script language="JavaScript">
 
-    document.forms.addItem.onsubmit = onAddItemSubmit;
+    var form = document.forms.addItem;
+    form.onsubmit = onAddItemSubmit;
+    form.email.onchange = function(){validateForm(form)};
+    form.phone.onchange = function(){validateForm(form)};
 
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "/items", true);
@@ -106,23 +109,24 @@
 
     function clearMessages() {
         var messages = document.getElementsByClassName('error-message');
-        for (var i=0; i<messages.length; i++) {
+        for (var i=0; i<messages.length;) {
             messages[i].parentNode.removeChild(messages[i]);
         };
     }
 
     function validateForm(form) {
         clearMessages();
+        var res = true;
         if (!isValidEmail(form.email.value)) {
             setErrorMessage('email-label', 'Email format is incorrect');;
-            return false
+            res = false;
         }
 
         if (!isValidPhone(form.phone.value)) {
             setErrorMessage('phone-label', 'Phone format is incorrect');
-            return false
+            res = false
         }
-        return true;
+        return res;
     }
 
     function setErrorMessage(wrapperId, message) {
