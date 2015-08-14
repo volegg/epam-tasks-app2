@@ -4,6 +4,18 @@
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
     <title>Form</title>
+    <style>
+        .error-message {
+            color: red;
+        }
+
+        label {
+            display: inline-block;
+            vertical-align: top;
+            width: 250px;
+        }
+
+    </style>
 </head>
 <body>
     <form name="addItem" method="post" action="/items">
@@ -30,7 +42,6 @@
 <script language="JavaScript">
 
     document.forms.addItem.onsubmit = onAddItemSubmit;
-   // document.getElementById('phone-label').appendChild(document.createElement('div')).innerHTML = 'aaaa';
 
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "/items", true);
@@ -91,26 +102,40 @@
 
     }
 
+    function clearMessages() {
+        var messages = document.getElementsByClassName('error-message');
+        for (var i=0; i<messages.length; i++) {
+            messages[i].parentNode.removeChild(messages[i]);
+        };
+    }
+
     function validateForm(form) {
+        clearMessages();
         if (!isValidEmail(form.email.value)) {
-            alert('wrong email');
+            setErrorMessage('email-label', 'Email format is incorrect');;
             return false
         }
+
         if (!isValidPhone(form.phone.value)) {
-            alert('wrong phone');
+            setErrorMessage('phone-label', 'Phone format is incorrect');
             return false
         }
         return true;
     }
 
+    function setErrorMessage(wrapperId, message) {
+        messageSpan = document.createElement('span');
+        messageSpan.innerText = message;
+        messageSpan.setAttribute('class', 'error-message');
+        document.getElementById(wrapperId).appendChild(messageSpan);
+    }
+
     function isValidPhone(phone) {
-        var strPhone = new String(email);
-        return ( !!(strPhone.match("^\+375\d{9}$")) || !!(strPhone.match("^8017\d{9}$")) );
+        return (!!phone.match(/^\+375\d{9}$/) || !!phone.match(/^8017\d{7}$/)) ;
     }
 
     function isValidEmail(email) {
-        var strEmail = new String('sdfasfas@tut.by');
-        return !!(strEmail.match("/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/"));
+        return !!(email.match(/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/));
     }
 
     function onDelete(){
