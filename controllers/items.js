@@ -17,11 +17,13 @@ exports.getAction = function (request, response) {
 
 exports.postAction = function (request, response, pathname, postData) {
     postData = qs.parse(postData);
+
     fs.readFile(config.database.path, function (err, data) {
         data = err || !data ? [] : JSON.parse(data.toString('utf8'));
         postData.id = new Date().toISOString().replace(/[^\d]/g, '');
         postData.phone = parseInt(postData.phone, 10);
         data.push(postData);
+
         fs.writeFile(config.database.path, JSON.stringify(data), function (err) {
             if (err) {
                 console.log(err);
@@ -30,7 +32,7 @@ exports.postAction = function (request, response, pathname, postData) {
 
             } else {
                 response.writeHead(200, {'Content-Type': 'application/json'});
-                fs.createReadStream(config.database.path).pipe(response);
+                response.end(JSON.stringify(postData));
             }
         });
     });
@@ -63,7 +65,7 @@ exports.deleteAllAction = function (request, response, pathname) {
 
                 } else {
                     response.writeHead(200, {'Content-Type': 'application/json'});
-                    fs.createReadStream(config.database.path).pipe(response);
+                    response.end(JSON.stringify(deletedItems));
                 }
             });
         });
