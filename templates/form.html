@@ -41,6 +41,8 @@
 
 <script language="JavaScript">
 
+(function () {
+
     var form = document.forms.addItem;
     form.onsubmit = onAddItemSubmit;
     form.email.onchange = function(){validateForm(form)};
@@ -68,12 +70,13 @@
         checkbox.setAttribute('type', 'checkbox');
         checkbox.setAttribute('name', 'delete');
         checkbox.setAttribute('value',item.id);
-        row.appendChild(checkbox);
+        row.appendChild(document.createElement('td')).appendChild(checkbox);
         row.appendChild(document.createElement('td')).innerText = table.childNodes.length;
-        row.appendChild(document.createElement('td')).innerText = item.id;
-        row.appendChild(document.createElement('td')).innerText = item.name;
-        row.appendChild(document.createElement('td')).innerText = item.phone;
-        row.appendChild(document.createElement('td')).innerText = item.email;
+        for(key in item) {
+            if(item.hasOwnProperty(key))
+                row.appendChild(document.createElement('td')).innerText = item[key];
+        }
+
         table.appendChild(row);
     }
 
@@ -85,10 +88,11 @@
         var headerRow = document.createElement('tr');
         headerRow.appendChild(document.createElement('th')).innerText = '';
         headerRow.appendChild(document.createElement('th')).innerText = 'N';
-        headerRow.appendChild(document.createElement('th')).innerText = 'id';
-        headerRow.appendChild(document.createElement('th')).innerText = 'name';
-        headerRow.appendChild(document.createElement('th')).innerText = 'phone';
-        headerRow.appendChild(document.createElement('th')).innerText = 'email';
+        for(key in items[0]) {
+            if(items[0].hasOwnProperty(key))
+                headerRow.appendChild(document.createElement('th')).innerText = key;
+        }
+
         table.appendChild(headerRow);
         items.forEach(function(item, i, arr){
             addItemToTable(item,table);
@@ -109,11 +113,22 @@
         renumerateRows(document.getElementById('items-table').rows);
     }
 
+
+    function getIdIndex(header) {
+        for (var i=0; i<header.cells.length; i++) {
+            if(header.cells[i].innerText === 'id') {
+                return (function(k){return k})(i);
+            }
+        }
+
+        return null;
+    }
     function deleteItem(itemId) {
-        var table = rows = document.getElementById('items-table');
+        var table = document.getElementById('items-table');
         var rows = table.rows;
+        var idIndex = getIdIndex(rows[0]);
         for(var i=1; i<rows.length; i++){
-            if(rows[i].cells[1].innerText == itemId ) {
+            if(rows[i].cells[idIndex].innerText == itemId ) {
                 table.deleteRow(i);
                 return true;
             }
@@ -123,7 +138,7 @@
 
     function renumerateRows(rows){
         for(var i=1; i<rows.length; i++) {
-            rows[i].cells[0].innerText = i;
+            rows[i].cells[1].innerText = i;
         }
     }
 
@@ -244,7 +259,7 @@
         res += '&phone=' + encodeURIComponent(form.phone.value);
         return res;
     }
-
+})();
 </script>
 
 </html>
