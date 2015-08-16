@@ -101,6 +101,32 @@
         tableWrapper.appendChild(btnDelete);
     }
 
+    function deleteItemsArray(items) {
+        for(var i=0; i<items.length; i++) {
+            deleteItem(items[i].id);
+        }
+
+        renumerateRows(document.getElementById('items-table').rows);
+    }
+
+    function deleteItem(itemId) {
+        var table = rows = document.getElementById('items-table');
+        var rows = table.rows;
+        for(var i=1; i<rows.length; i++){
+            if(rows[i].cells[1].innerText == itemId ) {
+                table.deleteRow(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function renumerateRows(rows){
+        for(var i=1; i<rows.length; i++) {
+            rows[i].cells[0].innerText = i;
+        }
+    }
+
     function onAddRequest() {
         if (this.readyState != 4) return;
 
@@ -189,12 +215,27 @@
             request = '/items?id=' + request + '';
             var xhr = new XMLHttpRequest();
             xhr.open("DELETE", request , true);
-            xhr.onreadystatechange = onItemsRequest;
+            xhr.onreadystatechange = onDeleteRequest;
             xhr.send('');
         }
 
         return false;
     }
+
+    function onDeleteRequest() {
+        if (this.readyState != 4) return;
+
+        if (this.status != 200) {
+            console.error(this.status + ': ' + this.statusText);
+        } else {
+            var items = JSON.parse(this.responseText);
+            if (!!items) {
+                deleteItemsArray(items);
+            }
+
+        }
+    }
+
 
     function getFromDataURI(form){
         var res;
