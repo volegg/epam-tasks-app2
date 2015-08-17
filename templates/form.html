@@ -253,10 +253,16 @@
 
 
     function getFromDataURI(form){
-        var res;
-        res = 'name=' + encodeURIComponent(form.name.value);
-        res += '&email=' + encodeURIComponent(form.email.value);
-        res += '&phone=' + encodeURIComponent(form.phone.value);
+        var res = "";
+        var conjunction = "";
+        for (var i=0; i<form.length; i++){
+            if (form[i].type === 'text'){
+                res += conjunction + form[i].name + '=' + encodeURIComponent(form[i].value);
+                if (conjunction === '')
+                    conjunction = "&";
+            }
+        }
+
         return res;
     }
 })();
