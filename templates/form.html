@@ -117,7 +117,7 @@
     function getIdIndex(header) {
         for (var i=0; i<header.cells.length; i++) {
             if(header.cells[i].innerText === 'id') {
-                return (function(k){return k})(i);
+                return i;
             }
         }
 
