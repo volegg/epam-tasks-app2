@@ -25,11 +25,11 @@
         </label>
         <label id="email-label">
             Email:
-            <input type="text" name="email" />
+            <input type="text" name="email" placeholder="your@email.com" />
         </label>
         <label id="phone-label" >
             Phone:
-            <input type="text" name="phone" />
+            <input type="text" name="phone" placeholder="+375ZZXXXYYYY" />
         </label>
         <button name="btnSubmit"  type="submit">Add</button>
     </form>
@@ -153,6 +153,7 @@
             if (!!item) {
                 var table = document.getElementById('items-table');
                 addItemToTable(item, table);
+                clearForm();
             }
         }
     }
@@ -268,6 +269,14 @@
         }
 
         return res;
+    }
+
+    function clearForm() {
+        for (var i=0; i<form.length; i++){
+            if (form[i].type === 'text'){
+                form[i].value = "";
+            }
+        }
     }
 })();
 </script>
