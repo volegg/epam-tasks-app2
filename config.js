@@ -19,6 +19,7 @@ var Config = {
         home: directories.controllers + '/home',
         form: directories.controllers + '/form',
         css: directories.controllers + '/css',
+        js: directories.controllers + '/js',
         items: directories.controllers + '/items'
     },
 

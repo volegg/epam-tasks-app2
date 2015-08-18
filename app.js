@@ -9,11 +9,10 @@ http.createServer(function(request, response) {
     request.setEncoding('utf8');
     pathname = url.parse(request.url).pathname.trim().toLowerCase();
     ext = path.extname(pathname).split('.').join("");
-    console.log(pathname, ext);
 
     if (pathname.lastIndexOf('/') === pathname.length - 1) {
         pathname = pathname.substring(0, pathname.length - 1);
-    } else if (ext === 'css') {
+    } else if (ext === 'css' || ext === 'js') {
         pathname = '/' + ext;
     }
 

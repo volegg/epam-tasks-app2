@@ -10,6 +10,11 @@ module.exports = [
       action: 'css::getAction'
     },
     {
+      pattern: '/js',
+      methods: ['GET'],
+      action: 'js::getAction'
+    },
+    {
         pattern: '/items',
         methods: ['POST'],
         action: 'items::postAction'
