@@ -1,0 +1,44 @@
+h4, label, input, button {
+  font-family: Arial, Helvetica, Sans-Serif;
+}
+
+h4 {
+  background-color: #ffffff;
+  margin: 0;
+  position: absolute;
+  top: 20px;
+  left: 50px;
+  padding: 0 10px;
+}
+
+form {
+  border: 1px solid #999999;
+  display: inline-block;
+  padding: 15px;
+  margin: 20px;
+}
+
+label {
+display: block;
+font-size: 12px;
+}
+
+input {
+  display: block;
+  margin: 5px 0 15px 0;
+  padding: 5px;
+  width: 500px;
+  font-size: 16px;
+}
+
+button {
+  cursor: pointer;
+  float: right;
+  padding: 5px 20px;
+  color: white;
+  background-color: #3289b9;
+  font-size: 20px;
+  border: none;
+  margin-top: 15px;
+}
+
