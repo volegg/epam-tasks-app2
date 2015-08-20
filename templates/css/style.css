@@ -9,6 +9,7 @@ h4 {
   top: 20px;
   left: 50px;
   padding: 0 10px;
+  z-index: 10;
 }
 
 form {
@@ -16,12 +17,13 @@ form {
   display: inline-block;
   padding: 15px;
   margin: 20px;
+  position: relative;
 }
 
 label {
   position: relative;
-display: block;
-font-size: 12px;
+  display: block;
+  font-size: 12px;
 }
 
 input {
@@ -32,10 +34,14 @@ input {
   font-size: 16px;
 }
 
-.error-message {
+.error,
+.error-bottom {
   position: absolute;
   font-size: 12px;
   color: red;
+}
+
+.error-bottom {
   bottom: -18px;
   left: 0;
 }
