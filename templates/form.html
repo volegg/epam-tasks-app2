@@ -5,6 +5,11 @@
     <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
     <title>Form</title>
     <style>
+
+        body {
+            font-family: Arial;
+            font-size: 13px;
+        }
         .error-message {
             color: red;
         }
@@ -58,27 +63,59 @@
         }
 
         #items-table {
+            margin: auto;
+            width: 40%;
             text-align: left;
             border-spacing: 0;
-            margin: auto;
             border: 1px solid darkgray;
-            width: 40%;
+            border-top: none;
 
+        }
+
+        #items-table caption {
+            font-size: 0.9em;
+            font-weight: bold;
+            color: dimgray;
+            text-align: left;
+            border: 1px solid darkgray;
+            border-bottom: none;
+            padding: 1em;
 
         }
 
         #items-table td {
             border-top: 1px solid darkgray;
-            padding: 2%;
+            padding: 1.5%;
+        }
+
+        #items-table tr:nth-child(odd) {
+            background-color: #eee;
+        }
+
+        #items-table tr:hover {
+            background-color: darkgray;
+        }
+
+        #items-table .header:hover {
+            background-color: white;
         }
 
         #items-table th {
             border-bottom: 1px solid darkgray;
-            padding: 2%
+            padding: 1.5%;
+            text-transform: capitalize;
         }
 
-        #items-table caption {
-            text-align: left;
+
+        #items-table a,
+        #items-table a:visited {
+            color: steelblue;
+            text-decoration: none;
+        }
+
+        #items-table a:hover {
+            color: royalblue;
+            text-decoration: underline;
         }
 
         #items-table-wrapper {
@@ -116,6 +153,33 @@
 <script language="JavaScript">
 
 (function () {
+
+
+    if (!Function.prototype.bind) {
+        Function.prototype.bind = function(oThis) {
+            if (typeof this !== 'function') {
+                throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
+            }
+
+            var aArgs   = Array.prototype.slice.call(arguments, 1),
+                    fToBind = this,
+                    fNOP    = function() {},
+                    fBound  = function() {
+                        return fToBind.apply(this instanceof fNOP
+                                        ? this
+                                        : oThis,
+                                aArgs.concat(Array.prototype.slice.call(arguments)));
+                    };
+
+            if (this.prototype) {
+                // native functions don't have a prototype
+                fNOP.prototype = this.prototype;
+            }
+            fBound.prototype = new fNOP();
+
+            return fBound;
+        };
+    }
 
     var form = document.forms.addItem;
     form.onsubmit = onAddItemSubmit;
@@ -162,6 +226,7 @@
         table.setAttribute('id','items-table');
         table.appendChild(document.createElement('caption')).innerText = 'TABLE';
         var headerRow = document.createElement('tr');
+        headerRow.setAttribute('class', 'header')
         headerRow.appendChild(document.createElement('th')).innerText = '#';
         for(key in items[0]) {
             if(items[0].hasOwnProperty(key))
@@ -187,7 +252,7 @@
 
     function getIdIndex(header) {
         for (var i=0; i<header.cells.length; i++) {
-            if(header.cells[i].innerText === 'id') {
+            if(header.cells[i].innerText.toLowerCase() === 'id') {
                 return i;
             }
         }
