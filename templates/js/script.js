@@ -1,43 +1,101 @@
 /*Validate form*/
-var form = document.querySelector('form');
+var ClientScript = function () {
+  var options,
+      model,
+      handler,
+      listener;
 
-function formValidate(evt) {
-  var targetEl = evt.target,
-      parentEl = targetEl.parentNode,
-      errClass = 'error-bottom',
-      errEl = parentEl.querySelectorAll('.' + errClass),
-      errorCont = document.createElement('span');
+  options = {
+    form: document.querySelector('form'),
+    inputErrorClass: 'error-bottom',
+    formErrorClass: 'error-form',
+    errorSpan: 'span',
+    patternEmail: /^(\w+)(@\w+)(\.\w+)$/gi,
+    patternPhone: /^(\+375)([\d]{9})$|^(8017)([\d]{7})$/gi,
+    phoneError: 'Phone number should match on of the following patterns: +375XXXYYYY or 8017XXXYYYY',
+    emailError: 'Email should match the following pattern: foo@bar.baz',
+    emptyError: 'This field must be filled',
+    formError: 'The form must be filled',
+    submitButtonId: 'ajaxButton'
+  };
 
-  errorCont.className = errClass;
-
-  function errMsgLoader(errEl, errMsg) {
-    if (errEl.length) {
-      errEl[0].innerText = errMsg;
-    } else {
-      errorCont.innerText = errMsg;
-      parentEl.insertBefore(errorCont,targetEl);
-    }
-  }
-
-  function inputChecker(target) {
-    var patEmail = /^(\w+)(@\w+)(\.\w+)$/gi,
-        patDouble = /^(\+375)([\d]{9})$|^(8017)([\d]{7})$/gi,
-        errMsg = '';
-
-    if (target.name === 'email') {
-      if (!target.value.match(patEmail)) {
-        errMsg = 'Email should match the following pattern: foo@bar.baz';
+  model = {
+    errorMessageChange: function(errorItem, errorMessage) {
+      if (errorItem) {
+        errorItem[0].innerText = errorMessage;
       }
-    } else if (target.name === 'phone') {
-      if (!target.value.match(patDouble)) {
-        errMsg = 'Phone number should match on of the following patterns: +375XXXYYYY or 8017XXXYYYY';
+    },
+
+    errorItemCreate: function(parent, target) {
+      var errorItem = document.createElement(options.errorSpan);
+
+      errorItem.className = options.inputErrorClass;
+      parent.insertBefore(errorItem, target);
+      return parent.querySelectorAll('.' + options.inputErrorClass);
+    },
+
+    checkErrorItems: function(target, errorClass) {
+      var errorItem = target.parentNode.querySelectorAll('.' + errorClass);
+
+      return (errorItem.length) ? errorItem : false;
+    },
+
+    checkInputItems: function(target) {
+      var errorMessage = '';
+
+      if (target.name === 'email') {
+        if (!target.value.match(options.patternEmail)) {
+          errorMessage = options.emailError;
+        }
+      } else if (target.name === 'phone') {
+        if (!target.value.match(options.patternPhone)) {
+          errorMessage = options.phoneError;
+        }
+      }
+
+      if (target.value === '') errorMessage = options.emptyError;
+
+      var errorItem = model.checkErrorItems(target, options.inputErrorClass);
+      if (!errorItem) errorItem = model.errorItemCreate(target.parentNode, target);
+      model.errorMessageChange(errorItem, errorMessage);
+    }
+  };
+
+  handler = {
+    formValidate: function(evt) {
+      var target = evt.target;
+
+      if (target.tagName === 'INPUT') {
+        model.checkInputItems(target);
+      }
+    },
+
+    formSubmit: function(evt) {
+      var target = evt.target;
+
+      if (target.id === options.submitButtonId) {
+        console.log(target);
+        evt.preventDefault();
+      } else {
+        model.checkInputItems(target);
       }
     }
+  };
 
-    errMsgLoader(errEl,errMsg);
-  }
+  listener = {
+    init: function() {
+      document.addEventListener('keyup', handler.formValidate);
+      document.addEventListener('click', handler.formSubmit);
+    }
+  };
 
-  inputChecker(targetEl);
-}
+  // Return object
+  return {
+    model: model,
+    handler: handler,
+    listener: listener
+  };
 
-form.addEventListener('keyup', formValidate);
+}();
+
+ClientScript.listener.init();

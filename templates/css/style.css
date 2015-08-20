@@ -34,7 +34,7 @@ input {
   font-size: 16px;
 }
 
-.error,
+.error-form,
 .error-bottom {
   position: absolute;
   font-size: 12px;
