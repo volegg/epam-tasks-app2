@@ -9,29 +9,73 @@
             color: red;
         }
 
-        label {
-            display: inline-block;
-            vertical-align: top;
-            width: 220px;
+        .items-form .item-wrapper {
+            margin: auto;
+            width:90%;
+        }
+
+        .items-form .item-wrapper label {
+            display: block;
+            padding: 10px 0;
+            font-size: 0.8em;
+        }
+
+        .items-form .item-wrapper input {
+            width:100%;
+            font-size: 1.2em;
+        }
+
+        .items-form {
+            width: 30%;
+            margin:auto;
+            padding-bottom: 1em;
+            border: 1px solid darkgrey;
+        }
+
+        .items-form .item-add-btn {
+            float:right;
+            margin-right: 5%;
+            margin-top: 2em;
+            font-size: 1.5em;
+            color: white;
+            background-color:dodgerblue;
+            border:none;
+            width:4em;
+        }
+
+        .clear-fix {
+            clear:both;
+        }
+
+        .items-form .items-form-title {
+            margin-top: -10px;
+            margin-left: 20px;
+            background-color: white;
+            width:80px;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-align: center;
         }
 
     </style>
 </head>
 <body>
-    <form name="addItem" method="post" action="/items">
-        <label id="name-label">
-            Name:
-            <input type="text" name="name" />
-        </label>
-        <label id="email-label">
-            Email:
-            <input type="text" name="email" placeholder="your@email.com" />
-        </label>
-        <label id="phone-label" >
-            Phone:
-            <input type="text" name="phone" placeholder="+375ZZXXXYYYY" />
-        </label>
-        <button name="btnSubmit"  type="submit">Add</button>
+    <form class="items-form" name="addItem" method="post" action="/items">
+        <div class="items-form-title">Add item</div>
+        <div class="item-wrapper">
+            <label for="item-name"  id="name-label">Name:</label>
+            <input id="item-name" type="text" name="name" />
+        </div>
+        <div class="item-wrapper" id="email-wrapper">
+            <label for="item-email">Email:</label>
+            <input id="item-email" type="text" name="email" placeholder="your@email.com" />
+        </div>
+        <div class="item-wrapper" id="phone-wrapper">
+            <label for="item-phone" >Phone:</label>
+            <input id="item-phone" type="text" name="phone" placeholder="+375ZZXXXYYYY" />
+        </div>
+        <button class="item-add-btn" name="btnSubmit"  type="submit">Add</button>
+        <div class="clear-fix"></div>
     </form>
     
     <div id="items-table-wrapper">
@@ -173,7 +217,7 @@
     }
 
     function clearMessages() {
-        var messages = document.getElementsByTagName('span');
+        var messages = document.getElementsByTagName('div');
         for (var i=0; i<messages.length; i++) {
             if (messages[i].getAttribute('class') === 'error-message'){
                 messages[i].parentNode.removeChild(messages[i]);
@@ -186,19 +230,19 @@
         clearMessages();
         var res = true;
         if (!isValidEmail(form.email.value)) {
-            setErrorMessage('email-label', 'Email format is incorrect');;
+            setErrorMessage('email-wrapper', 'Email format is incorrect');;
             res = false;
         }
 
         if (!isValidPhone(form.phone.value)) {
-            setErrorMessage('phone-label', 'Phone format is incorrect');
+            setErrorMessage('phone-wrapper', 'Phone format is incorrect');
             res = false
         }
         return res;
     }
 
     function setErrorMessage(wrapperId, message) {
-        messageSpan = document.createElement('span');
+        messageSpan = document.createElement('div');
         messageSpan.innerText = message;
         messageSpan.setAttribute('class', 'error-message');
         document.getElementById(wrapperId).appendChild(messageSpan);
