@@ -57,6 +57,34 @@
             text-align: center;
         }
 
+        #items-table {
+            text-align: left;
+            border-spacing: 0;
+            margin: auto;
+            border: 1px solid darkgray;
+            width: 40%;
+
+
+        }
+
+        #items-table td {
+            border-top: 1px solid darkgray;
+            padding: 2%;
+        }
+
+        #items-table th {
+            border-bottom: 1px solid darkgray;
+            padding: 2%
+        }
+
+        #items-table caption {
+            text-align: left;
+        }
+
+        #items-table-wrapper {
+            margin-top: 30px;
+        }
+
     </style>
 </head>
 <body>
@@ -77,7 +105,9 @@
         <button class="item-add-btn" name="btnSubmit"  type="submit">Add</button>
         <div class="clear-fix"></div>
     </form>
-    
+
+
+    <br/>
     <div id="items-table-wrapper">
     </div>
 
@@ -110,8 +140,7 @@
 
     function addItemToTable(item, table) {
         var row = document.createElement('tr');
-        row.appendChild(document.createElement('td'));
-        row.appendChild(document.createElement('td')).innerText = table.childNodes.length;
+        row.appendChild(document.createElement('td')).innerText = table.childNodes.length-1;
         for(key in item) {
             if(item.hasOwnProperty(key))
                 row.appendChild(document.createElement('td')).innerText = item[key];
@@ -131,8 +160,8 @@
         tableWrapper.innerHTML = '';
         var table = document.createElement('table');
         table.setAttribute('id','items-table');
+        table.appendChild(document.createElement('caption')).innerText = 'TABLE';
         var headerRow = document.createElement('tr');
-        headerRow.appendChild(document.createElement('th')).innerText = '';
         headerRow.appendChild(document.createElement('th')).innerText = '#';
         for(key in items[0]) {
             if(items[0].hasOwnProperty(key))
@@ -168,7 +197,7 @@
     function deleteItem(itemId) {
         var table = document.getElementById('items-table');
         var rows = table.children;
-        var idIndex = getIdIndex(rows[0]);
+        var idIndex = getIdIndex(rows[1]);
         for(var i=1; i<rows.length; i++){
             if(rows[i].cells[idIndex].innerText == itemId ) {
                 table.children[i].parentElement.removeChild(table.children[i]);
@@ -179,8 +208,8 @@
     }
 
     function renumerateRows(rows){
-        for(var i=1; i<rows.length; i++) {
-            rows[i].cells[1].innerText = i;
+        for(var i=2; i<rows.length; i++) {
+            rows[i].cells[0].innerText = i-1;
         }
     }
 
