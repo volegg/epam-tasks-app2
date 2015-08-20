@@ -2,6 +2,7 @@
 var ClientScript = function () {
   var options,
       model,
+      ajax,
       handler,
       listener;
 
@@ -41,7 +42,7 @@ var ClientScript = function () {
     },
 
     checkInputItems: function(target) {
-      var errorMessage = '';
+      var errorMessage = '', errorItem;
 
       if (target.name === 'email') {
         if (!target.value.match(options.patternEmail)) {
@@ -55,11 +56,19 @@ var ClientScript = function () {
 
       if (target.value === '') errorMessage = options.emptyError;
 
-      var errorItem = model.checkErrorItems(target, options.inputErrorClass);
+      errorItem = model.checkErrorItems(target, options.inputErrorClass);
       if (!errorItem) errorItem = model.errorItemCreate(target.parentNode, target);
       model.errorMessageChange(errorItem, errorMessage);
+    },
+
+    checkForm: function(target) {
+
     }
   };
+
+  ajax = {
+
+  },
 
   handler = {
     formValidate: function(evt) {
@@ -76,7 +85,7 @@ var ClientScript = function () {
       if (target.id === options.submitButtonId) {
         console.log(target);
         evt.preventDefault();
-      } else {
+      } else if (target.tagName === 'INPUT') {
         model.checkInputItems(target);
       }
     }
@@ -92,6 +101,7 @@ var ClientScript = function () {
   // Return object
   return {
     model: model,
+    ajax: ajax,
     handler: handler,
     listener: listener
   };
