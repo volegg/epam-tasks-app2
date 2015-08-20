@@ -110,17 +110,19 @@
 
     function addItemToTable(item, table) {
         var row = document.createElement('tr');
-        var checkbox = document.createElement('input');
-        checkbox.setAttribute('type', 'checkbox');
-        checkbox.setAttribute('name', 'delete');
-        checkbox.setAttribute('value',item.id);
-        row.appendChild(document.createElement('td')).appendChild(checkbox);
+        row.appendChild(document.createElement('td'));
         row.appendChild(document.createElement('td')).innerText = table.childNodes.length;
         for(key in item) {
             if(item.hasOwnProperty(key))
                 row.appendChild(document.createElement('td')).innerText = item[key];
         }
 
+        var deleteLink = document.createElement('a');
+        deleteLink.setAttribute('class', 'item-delete');
+        deleteLink.innerText = 'Remove';
+        deleteLink.setAttribute('href', '#');
+        deleteLink.onclick = onDelete.bind(this, item.id);
+        row.appendChild(document.createElement('td')).appendChild(deleteLink);
         table.appendChild(row);
     }
 
@@ -131,23 +133,18 @@
         table.setAttribute('id','items-table');
         var headerRow = document.createElement('tr');
         headerRow.appendChild(document.createElement('th')).innerText = '';
-        headerRow.appendChild(document.createElement('th')).innerText = 'N';
+        headerRow.appendChild(document.createElement('th')).innerText = '#';
         for(key in items[0]) {
             if(items[0].hasOwnProperty(key))
                 headerRow.appendChild(document.createElement('th')).innerText = key;
         }
-
+        headerRow.appendChild(document.createElement('th')).innerText = '';
         table.appendChild(headerRow);
         for (var i=0; i<items.length; i++) {
             addItemToTable(items[i],table);
         }
 
         tableWrapper.appendChild(table);
-        btnDelete = document.createElement('input');
-        btnDelete.setAttribute('type', 'button');
-        btnDelete.setAttribute('value', 'Delete');
-        btnDelete.onclick = onDelete;
-        tableWrapper.appendChild(btnDelete);
     }
 
     function deleteItemsArray(items) {
@@ -256,32 +253,13 @@
         return !!(email.match(/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/));
     }
 
-    function onDelete(){
-        var items = document.getElementsByName('delete');
-        var request = '';
-        var first = true;
+    function onDelete(id, event){
+        request = '/items?id=' + id + '';
+        var xhr = new XMLHttpRequest();
+        xhr.open("DELETE", request , true);
+        xhr.onreadystatechange = onDeleteRequest;
+        xhr.send('');
 
-        for (var i=0; i<items.length; i++) {
-            if (items[i].checked){
-                if (!first) {
-                    request += ',';
-                }
-                else {
-                    first = false;
-                }
-
-                request += items[i].value;
-
-            }
-        };
-
-        if(!!request) {
-            request = '/items?id=' + request + '';
-            var xhr = new XMLHttpRequest();
-            xhr.open("DELETE", request , true);
-            xhr.onreadystatechange = onDeleteRequest;
-            xhr.send('');
-        }
 
         return false;
     }
