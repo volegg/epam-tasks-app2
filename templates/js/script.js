@@ -16,53 +16,111 @@ var ClientScript = function () {
     phoneError: 'Phone number should match on of the following patterns: +375XXXYYYY or 8017XXXYYYY',
     emailError: 'Email should match the following pattern: foo@bar.baz',
     emptyError: 'This field must be filled',
-    formError: 'The form must be filled',
+    formEmptyError: 'The form must be filled',
+    formItemsError: 'The form items are filled incorrectly',
+    formItemsEmptyError: 'The form items are filled incorrectly or empty',
     submitButtonId: 'ajaxButton'
   };
 
   model = {
-    errorMessageChange: function(errorItem, errorMessage) {
+    /*Change error message in existing item*/
+    changeErrorMessage: function(errorItem, errorMessage) {
       if (errorItem) {
         errorItem[0].innerText = errorMessage;
       }
     },
 
-    errorItemCreate: function(parent, target) {
+    /*Create new error item*/
+    createErrorItem: function(parent, target, selector) {
       var errorItem = document.createElement(options.errorSpan);
 
-      errorItem.className = options.inputErrorClass;
+      errorItem.className = selector;
       parent.insertBefore(errorItem, target);
-      return parent.querySelectorAll('.' + options.inputErrorClass);
+      return parent.querySelectorAll('.' + selector);
     },
 
-    checkErrorItems: function(target, errorClass) {
-      var errorItem = target.parentNode.querySelectorAll('.' + errorClass);
+    /*Get NodeList of error items, False if none*/
+    getErrorItems: function(selector, target) {
+      var target = target || options.form,
+          errorItem = target.parentNode.querySelectorAll('.' + selector);
 
       return (errorItem.length) ? errorItem : false;
     },
 
-    checkInputItems: function(target) {
-      var errorMessage = '', errorItem;
+    /*Get NodeList of empty error items*/
+    getEmptyItems: function(selector, option) {
+      var itemArray = options.form.querySelectorAll(selector),
+          emptyArray = [];
 
-      if (target.name === 'email') {
-        if (!target.value.match(options.patternEmail)) {
-          errorMessage = options.emailError;
-        }
-      } else if (target.name === 'phone') {
-        if (!target.value.match(options.patternPhone)) {
-          errorMessage = options.phoneError;
+      for (var i = 0; i < itemArray.length; i++) {
+        if (itemArray[i].value === '') {
+          emptyArray.push(i);
+        } else if (option) {
+          if (itemArray[i].innerText !== '') emptyArray.push(i);
         }
       }
-
-      if (target.value === '') errorMessage = options.emptyError;
-
-      errorItem = model.checkErrorItems(target, options.inputErrorClass);
-      if (!errorItem) errorItem = model.errorItemCreate(target.parentNode, target);
-      model.errorMessageChange(errorItem, errorMessage);
+      return emptyArray;
     },
 
-    checkForm: function(target) {
+    /*Return error mesage*/
+    chooseErrorMessage: function(target, option) {
+      var errorMessage = '';
 
+      if (target.tagName === 'INPUT') {
+        if (target.name === 'email') {
+          if (!target.value.match(options.patternEmail)) {
+            errorMessage = options.emailError;
+          }
+        } else if (target.name === 'phone') {
+          if (!target.value.match(options.patternPhone)) {
+            errorMessage = options.phoneError;
+          }
+        } else if (target.value === '') {
+          errorMessage = options.emptyError;
+        }
+      } else {
+        var emptyItems = model.getEmptyItems('input'),
+            errorItems = model.getEmptyItems('.' + options.inputErrorClass, true);
+
+        if (emptyItems.length !== 0 && errorItems.length === 0) {
+          errorMessage = options.formEmptyError;
+        } else if (emptyItems.length === 0 && errorItems.length !== 0) {
+          errorMessage = options.formItemsError;
+        } else if (emptyItems.length !== 0 && errorItems.length !== 0) {
+          errorMessage = options.formItemsEmptyError;
+        }
+      }
+      return errorMessage;
+    },
+
+    checkInputItems: function(target) {
+      var errorItem,
+          errorMessage = model.chooseErrorMessage(target, false),
+          errorClass = options.inputErrorClass;
+
+      errorItem = model.getErrorItems(errorClass, target);
+      if (!errorItem) errorItem = model.createErrorItem(target.parentNode, target, errorClass);
+      model.changeErrorMessage(errorItem, errorMessage);
+
+      if (errorMessage !== '') {
+        document.getElementById(options.submitButtonId).className = 'disabled';
+      }
+
+      model.checkForm(document.getElementById(options.submitButtonId));
+    },
+
+    checkForm: function(target, evt) {
+      var errorMessage = model.chooseErrorMessage(target, true),
+          errorClass = options.formErrorClass,
+          errorItem;
+
+      errorItem = model.getErrorItems(errorClass);
+      if (!errorItem) errorItem = model.createErrorItem(target.parentNode, target, errorClass);
+      model.changeErrorMessage(errorItem, errorMessage);
+
+      if (errorMessage === '') {
+        target.className = 'enabled';
+      }
     }
   };
 
@@ -83,8 +141,8 @@ var ClientScript = function () {
       var target = evt.target;
 
       if (target.id === options.submitButtonId) {
-        console.log(target);
         evt.preventDefault();
+        model.checkForm(target, evt);
       } else if (target.tagName === 'INPUT') {
         model.checkInputItems(target);
       }
