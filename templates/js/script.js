@@ -13,7 +13,7 @@ var ClientScript = function () {
     errorSpan: 'span',
     patternEmail: /^(\w+)(@\w+)(\.\w+)$/gi,
     patternPhone: /^(\+375)([\d]{9})$|^(8017)([\d]{7})$/gi,
-    phoneError: 'Phone number should match on of the following patterns: +375XXXYYYY or 8017XXXYYYY',
+    phoneError: 'Phone number should match on of the following patterns: +375ZZXXYYY or 8017XXXYYYY',
     emailError: 'Email should match the following pattern: foo@bar.baz',
     emptyError: 'This field must be filled',
     formEmptyError: 'The form must be filled',
@@ -117,15 +117,60 @@ var ClientScript = function () {
       errorItem = model.getErrorItems(errorClass);
       if (!errorItem) errorItem = model.createErrorItem(target.parentNode, target, errorClass);
       model.changeErrorMessage(errorItem, errorMessage);
+      if (errorMessage === '') target.className = 'enabled';
 
-      if (errorMessage === '') {
-        target.className = 'enabled';
+      if (typeof(evt) !== 'undefined') {
+        evt.preventDefault();
+        if (evt.type === 'click' && target.className === 'enabled') {
+          ajax.httpClientRequest();
+        }
       }
     }
-  };
+  },
 
   ajax = {
+    httpClientRequest: function() {
+      var httpRequest;
+      document.getElementById('ajaxButton').onclick = function() {
+        makeRequest('http://localhost:8888/item');
+      }
 
+      function makeRequest(url) {
+        alert(123);
+        if (window.XMLHttpRequest) { // Mozilla, Safari, ...
+          httpRequest = new XMLHttpRequest();
+        } else if (window.ActiveXObject) { // IE
+          try {
+            httpRequest = new ActiveXObject("Msxml2.XMLHTTP");
+          }
+          catch (e) {
+            try {
+              httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            catch (e) {}
+          }
+        }
+
+        if (!httpRequest) {
+          alert('Giving up :( Cannot create an XMLHTTP instance');
+          return false;
+        }
+        httpRequest.onreadystatechange = alertContents;
+        httpRequest.open('GET', url);
+        httpRequest.send('POST', url);
+      }
+
+      function alertContents() {
+        if (httpRequest.readyState === 4) {
+          if (httpRequest.status === 200) {
+            console.log(httpRequest.responseText);
+            alert(httpRequest.responseText);
+          } else {
+            alert('There was a problem with the request.');
+          }
+        }
+      }
+    }
   },
 
   handler = {
@@ -141,7 +186,6 @@ var ClientScript = function () {
       var target = evt.target;
 
       if (target.id === options.submitButtonId) {
-        evt.preventDefault();
         model.checkForm(target, evt);
       } else if (target.tagName === 'INPUT') {
         model.checkInputItems(target);
