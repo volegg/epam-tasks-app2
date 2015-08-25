@@ -1,4 +1,4 @@
-h4, label, input, button, span {
+h4, label, input, button, span, table, td, th, caption, a {
   font-family: Arial, Helvetica, Sans-Serif;
 }
 
@@ -63,4 +63,49 @@ button.enabled {
 button.disabled {
   background-color: rgba(32, 79, 109, 0.38);
 }
+
+table {
+  border: 1px solid #999999;
+  padding: 15px;
+  margin: 20px;
+  position: relative;
+  font-size: 12px;
+  text-align: left;
+  width: 546px;
+}
+
+caption {
+  color: grey;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+th:first-child,
+td:first-child {
+  width: 40px;
+}
+
+th:nth-child(2),
+td:nth-child(2) {
+  width: 170px;
+}
+
+th:nth-child(3),
+td:nth-child(3) {
+  width: 130px;
+}
+
+th:nth-child(4),
+td:nth-child(4) {
+  width: 105px;
+}
+
+th:nth-child(5),
+td:nth-child(5) {
+  width: 50px;
+}
+
+
 

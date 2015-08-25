@@ -19,7 +19,8 @@ var ClientScript = function () {
     formEmptyError: 'The form must be filled',
     formItemsError: 'The form items are filled incorrectly',
     formItemsEmptyError: 'The form items are filled incorrectly or empty',
-    submitButtonId: 'ajaxButton'
+    submitButtonId: 'ajaxButton',
+    tableHeader: ['#','Name','Email','Phone','']
   };
 
   model = {
@@ -63,7 +64,7 @@ var ClientScript = function () {
     },
 
     /*Return error mesage*/
-    chooseErrorMessage: function(target, option) {
+    chooseErrorMessage: function(target) {
       var errorMessage = '';
 
       if (target.tagName === 'INPUT') {
@@ -93,9 +94,10 @@ var ClientScript = function () {
       return errorMessage;
     },
 
+    /*Check form inputs for errors*/
     checkInputItems: function(target) {
       var errorItem,
-          errorMessage = model.chooseErrorMessage(target, false),
+          errorMessage = model.chooseErrorMessage(target),
           errorClass = options.inputErrorClass;
 
       errorItem = model.getErrorItems(errorClass, target);
@@ -109,8 +111,9 @@ var ClientScript = function () {
       model.checkForm(document.getElementById(options.submitButtonId));
     },
 
+    /*Check form for errors*/
     checkForm: function(target, evt) {
-      var errorMessage = model.chooseErrorMessage(target, true),
+      var errorMessage = model.chooseErrorMessage(target),
           errorClass = options.formErrorClass,
           errorItem;
 
@@ -122,54 +125,133 @@ var ClientScript = function () {
       if (typeof(evt) !== 'undefined') {
         evt.preventDefault();
         if (evt.type === 'click' && target.className === 'enabled') {
-          ajax.httpClientRequest();
+          ajax.httpClientRequest(false);
         }
       }
+    },
+
+    createTable: function(data) {
+      var table = document.createElement('table'),
+          tbody = document.createElement('tbody'),
+          thead = document.createElement('thead'),
+          caption = document.createElement('caption');
+
+      table.id = 'ajaxTable';
+      caption.innerText = 'Table';
+
+      thead.appendChild(caption);
+      thead.appendChild(model.createRow(true));
+      table.appendChild(thead);
+      tbody.appendChild(model.createRow(false, data));
+      table.appendChild(tbody);
+
+      options.form.parentNode.insertBefore(table, options.form.nextSibling);
+    },
+
+    createRow: function(option, data) {
+      var trow = document.createElement('tr'), el;
+
+      (option) ? el = 'th' : el = 'td';
+
+      function getRowData(i) {
+        if (i === 0) {
+          return (!document.querySelector('td')) ? 1 : document.querySelectorAll('tr').length ;
+        } else if (i >= 1 && i <=3) {
+          return data[i - 1];
+        } else if (i === 4) {
+          var removeTag = '<a href="#">Remove</a>';
+          return removeTag;
+        }
+      }
+
+      for (var i = 0; i < 5; i++) {
+        var thead = document.createElement(el);
+        (option) ? thead.innerHTML = options.tableHeader[i] : thead.innerHTML = getRowData(i);
+        trow.appendChild(thead);
+      }
+
+      return trow;
     }
   },
 
   ajax = {
-    httpClientRequest: function() {
-      var httpRequest;
-      document.getElementById('ajaxButton').onclick = function() {
-        makeRequest('http://localhost:8888/item');
-      }
+    /*Get form data*/
+    getFormData: function(form, option) {
+      var name = form.querySelector('input[name="name"]').value,
+          email = form.querySelector('input[name="email"]').value,
+          phone = form.querySelector('input[name="phone"]').value,
+          data;
 
-      function makeRequest(url) {
-        alert(123);
-        if (window.XMLHttpRequest) { // Mozilla, Safari, ...
-          httpRequest = new XMLHttpRequest();
-        } else if (window.ActiveXObject) { // IE
+      return (option) ? data = 'name=' + name +'&email=' + email + '&phone=' + phone : data = [name, email, phone];
+    },
+
+    /*Clear form after successful post event*/
+    clearForm: function(form) {
+      form.querySelector('input[name="name"]').value = '';
+      form.querySelector('input[name="email"]').value = '';
+      form.querySelector('input[name="phone"]').value = '';
+    },
+
+    /*Make AJAX request to server*/
+    makeRequest: function(url) {
+      var httpRequest,
+          postData = ajax.getFormData(options.form, true),
+          tableData = ajax.getFormData(options.form, false);
+
+      if (window.XMLHttpRequest) { // Mozilla, Safari, ...
+        httpRequest = new XMLHttpRequest();
+      } else if (window.ActiveXObject) { // IE
+        try {
+          httpRequest = new ActiveXObject("Msxml2.XMLHTTP");
+        }
+        catch (e) {
           try {
-            httpRequest = new ActiveXObject("Msxml2.XMLHTTP");
+            httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
           }
-          catch (e) {
-            try {
-              httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-            catch (e) {}
-          }
+          catch (e) {}
         }
-
-        if (!httpRequest) {
-          alert('Giving up :( Cannot create an XMLHTTP instance');
-          return false;
-        }
-        httpRequest.onreadystatechange = alertContents;
-        httpRequest.open('GET', url);
-        httpRequest.send('POST', url);
       }
 
-      function alertContents() {
+      if (!httpRequest) {
+        alert('Giving up :( Cannot create an XMLHTTP instance');
+        return false;
+      }
+
+      httpRequest.onreadystatechange = function() {
         if (httpRequest.readyState === 4) {
           if (httpRequest.status === 200) {
+            var tbody = document.querySelector('tbody');
+
             console.log(httpRequest.responseText);
-            alert(httpRequest.responseText);
+            //alert(httpRequest.responseText);
+            ajax.clearForm(options.form);
+
+            if (!tbody) {
+              model.createTable(tableData);
+            } else {
+              tbody.appendChild(model.createRow(false, tableData))
+            }
           } else {
             alert('There was a problem with the request.');
           }
         }
-      }
+      };
+
+      httpRequest.open('POST', url);
+      httpRequest.setRequestHeader('Content-type', 'application/json');
+      httpRequest.send(postData);
+    },
+
+    /*Start AJAX request*/
+    httpClientRequest: function(option) {
+      var baseUrl = 'http://localhost:8888',
+          postUrl = '/items',
+          getUrl = '/get',
+          url;
+
+      url = (option) ? baseUrl + getUrl : baseUrl + postUrl;
+
+      ajax.makeRequest(url, option);
     }
   },
 
