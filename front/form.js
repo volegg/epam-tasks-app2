@@ -1,6 +1,7 @@
 /**
  * Created by Yaroslav_Andryushche on 8/26/2015.
  */
+/*
 (function () {
 
 
@@ -243,4 +244,18 @@
             }
         }
     }
+
 })();
+*/
+var staffApp = angular.module('staffManagementApp', []);
+
+staffApp.controller('itemsCtrl', function ($scope, $http) {
+    $scope.items = [];
+    $http.get('/items').success(function(data){
+        $scope.items = data;
+    });
+});
+
+function onDelete(id, envent) {
+    console.log('delete item: ' + id);
+}

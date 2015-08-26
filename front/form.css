@@ -88,6 +88,7 @@ body {
     background-color: darkgray;
 }
 
+#items-table .header:nth-child(odd),
 #items-table .header:hover {
     background-color: white;
 }

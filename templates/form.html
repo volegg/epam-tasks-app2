@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="staffManagementApp">
 <head>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
     <title>Form</title>
     <link rel="stylesheet" href="front/form.css">
+    <script src="https://code.angularjs.org/1.2.14/angular.js"></script>
 </head>
-<body>
+<body ng-controller="itemsCtrl">
     <form class="items-form" name="addItem" method="post" action="/items">
         <div class="items-form-title">Add item</div>
         <div class="item-wrapper">
@@ -27,7 +28,20 @@
 
 
     <br/>
-    <div id="items-table-wrapper">
+    <div id="items-table-wrapper" ng-show="!!items.length">
+        <table id="items-table">
+            <caption>TABLE</caption>
+            <tr class="header">
+                <th>#</th>
+                <th ng-repeat="(key,value) in items[0]">{{ key }} </th>
+                <th></th>
+            </tr>
+            <tr ng-repeat="item in items">
+                <td>{{$index + 1}}</td>
+                <td ng-repeat="value in item">{{ value }} </td>
+                <td ><a class="item-delete" href="#" ng-click="onDelete.bind(this,item.id)">Remove</a></td>
+            </tr>
+        </table>
     </div>
 
 </body>

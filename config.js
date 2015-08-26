@@ -3,7 +3,7 @@ var projectDir = __dirname,
         project: projectDir,
         controllers: projectDir + '/controllers',
         templates: projectDir + '/templates',
-        routes: projectDir + '/routes',
+        routes: projectDir + '/routes'
     };
 
 var Config = {
