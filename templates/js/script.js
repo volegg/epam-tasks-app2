@@ -125,11 +125,13 @@ var ClientScript = function () {
       if (typeof(evt) !== 'undefined') {
         evt.preventDefault();
         if (evt.type === 'click' && target.className === 'enabled') {
+          target.className = 'disabled';
           ajax.httpClientRequest(false);
         }
       }
     },
 
+    /*Create table*/
     createTable: function(data) {
       var table = document.createElement('table'),
           tbody = document.createElement('tbody'),
@@ -148,6 +150,7 @@ var ClientScript = function () {
       options.form.parentNode.insertBefore(table, options.form.nextSibling);
     },
 
+    /*Create row for table*/
     createRow: function(option, data) {
       var trow = document.createElement('tr'), el;
 
@@ -156,18 +159,22 @@ var ClientScript = function () {
       function getRowData(i) {
         if (i === 0) {
           return (!document.querySelector('td')) ? 1 : document.querySelectorAll('tr').length ;
-        } else if (i >= 1 && i <=3) {
-          return data[i - 1];
+        } else if (i === 1) {
+          return data.name;
+        } else if (i === 2) {
+          return data.email;
+        } else if (i === 3) {
+          return data.phone;
         } else if (i === 4) {
-          var removeTag = '<a href="#">Remove</a>';
+          var removeTag = '<a href="#' + data.id + '">Remove</a>';
           return removeTag;
         }
       }
 
       for (var i = 0; i < 5; i++) {
-        var thead = document.createElement(el);
-        (option) ? thead.innerHTML = options.tableHeader[i] : thead.innerHTML = getRowData(i);
-        trow.appendChild(thead);
+        var tcell = document.createElement(el);
+        (option) ? tcell.innerHTML = options.tableHeader[i] : tcell.innerHTML = getRowData(i);
+        trow.appendChild(tcell);
       }
 
       return trow;
@@ -182,7 +189,7 @@ var ClientScript = function () {
           phone = form.querySelector('input[name="phone"]').value,
           data;
 
-      return (option) ? data = 'name=' + name +'&email=' + email + '&phone=' + phone : data = [name, email, phone];
+      return (!option) ? data = 'name=' + name +'&email=' + email + '&phone=' + phone : data = [name, email, phone];
     },
 
     /*Clear form after successful post event*/
@@ -192,11 +199,9 @@ var ClientScript = function () {
       form.querySelector('input[name="phone"]').value = '';
     },
 
-    /*Make AJAX request to server*/
-    makeRequest: function(url) {
-      var httpRequest,
-          postData = ajax.getFormData(options.form, true),
-          tableData = ajax.getFormData(options.form, false);
+    /*Create xmlHttpRequest instance*/
+    createHttpRequest: function() {
+      var httpRequest;
 
       if (window.XMLHttpRequest) { // Mozilla, Safari, ...
         httpRequest = new XMLHttpRequest();
@@ -215,21 +220,52 @@ var ClientScript = function () {
       if (!httpRequest) {
         alert('Giving up :( Cannot create an XMLHTTP instance');
         return false;
+      } else {
+        return httpRequest;
       }
+    },
+
+    /*Make AJAX request to server
+    * option = true triggers GET method
+    * option = false triggers POST method*/
+    compileRequest: function(url, option) {
+      var httpRequest = ajax.createHttpRequest(),
+          postData = ajax.getFormData(options.form, false),
+          method;
+
+      (option) ? method = 'GET' : method = 'POST';
 
       httpRequest.onreadystatechange = function() {
         if (httpRequest.readyState === 4) {
           if (httpRequest.status === 200) {
-            var tbody = document.querySelector('tbody');
+            var tbody = document.querySelector('tbody'),
+                response = httpRequest.responseText;
 
-            console.log(httpRequest.responseText);
-            //alert(httpRequest.responseText);
-            ajax.clearForm(options.form);
+            function loadResponseData(response) {
+              var tbody = document.querySelector('tbody');
+              if (!tbody) {
+                model.createTable(response);
+              } else {
+                tbody.appendChild(model.createRow(false, response))
+              }
+            }
 
-            if (!tbody) {
-              model.createTable(tableData);
-            } else {
-              tbody.appendChild(model.createRow(false, tableData))
+            if (response.length > 3) {
+              response = JSON.parse(response);
+
+              if (option) {
+
+              } else {
+                ajax.clearForm(options.form);
+              }
+
+              if (!Array.isArray(response)) {
+                loadResponseData(response);
+              } else {
+                for (var i = 0; i < response.length; i++) {
+                  loadResponseData(response[i]);
+                }
+              }
             }
           } else {
             alert('There was a problem with the request.');
@@ -237,21 +273,22 @@ var ClientScript = function () {
         }
       };
 
-      httpRequest.open('POST', url);
+      httpRequest.open(method, url);
       httpRequest.setRequestHeader('Content-type', 'application/json');
-      httpRequest.send(postData);
+      (option) ? httpRequest.send() : httpRequest.send(postData);
     },
 
-    /*Start AJAX request*/
+    /*Start AJAX request
+    * option = true triggers GET method
+    * option = false triggers POST method*/
     httpClientRequest: function(option) {
       var baseUrl = 'http://localhost:8888',
           postUrl = '/items',
-          getUrl = '/get',
           url;
 
-      url = (option) ? baseUrl + getUrl : baseUrl + postUrl;
+      url = baseUrl + postUrl;
 
-      ajax.makeRequest(url, option);
+      ajax.compileRequest(url, option);
     }
   },
 
@@ -264,7 +301,7 @@ var ClientScript = function () {
       }
     },
 
-    formSubmit: function(evt) {
+    formClick: function(evt) {
       var target = evt.target;
 
       if (target.id === options.submitButtonId) {
@@ -272,13 +309,18 @@ var ClientScript = function () {
       } else if (target.tagName === 'INPUT') {
         model.checkInputItems(target);
       }
+    },
+
+    loadData: function(evt) {
+      ajax.httpClientRequest(true)
     }
   };
 
   listener = {
     init: function() {
       document.addEventListener('keyup', handler.formValidate);
-      document.addEventListener('click', handler.formSubmit);
+      document.addEventListener('click', handler.formClick);
+      document.addEventListener('DOMContentLoaded', handler.loadData)
     }
   };
 
