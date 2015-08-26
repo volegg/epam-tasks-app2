@@ -1,0 +1,115 @@
+body {
+    font-family: Arial;
+    font-size: 13px;
+}
+.error-message {
+    color: red;
+}
+
+.items-form .item-wrapper {
+    margin: auto;
+    width:90%;
+}
+
+.items-form .item-wrapper label {
+    display: block;
+    padding: 10px 0;
+    font-size: 0.8em;
+}
+
+.items-form .item-wrapper input {
+    width:100%;
+    font-size: 1.2em;
+}
+
+.items-form {
+    width: 30%;
+    margin:auto;
+    padding-bottom: 1em;
+    border: 1px solid darkgrey;
+}
+
+.items-form .item-add-btn {
+    float:right;
+    margin-right: 5%;
+    margin-top: 2em;
+    font-size: 1.5em;
+    color: white;
+    background-color:dodgerblue;
+    border:none;
+    width:4em;
+}
+
+.clear-fix {
+    clear:both;
+}
+
+.items-form .items-form-title {
+    margin-top: -10px;
+    margin-left: 20px;
+    background-color: white;
+    width:80px;
+    font-size: 0.9em;
+    font-weight: bold;
+    text-align: center;
+}
+
+#items-table {
+    margin: auto;
+    width: 40%;
+    text-align: left;
+    border-spacing: 0;
+    border: 1px solid darkgray;
+    border-top: none;
+
+}
+
+#items-table caption {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: dimgray;
+    text-align: left;
+    border: 1px solid darkgray;
+    border-bottom: none;
+    padding: 1em;
+
+}
+
+#items-table td {
+    border-top: 1px solid darkgray;
+    padding: 1.5%;
+}
+
+#items-table tr:nth-child(odd) {
+    background-color: #eee;
+}
+
+#items-table tr:hover {
+    background-color: darkgray;
+}
+
+#items-table .header:hover {
+    background-color: white;
+}
+
+#items-table th {
+    border-bottom: 1px solid darkgray;
+    padding: 1.5%;
+    text-transform: capitalize;
+}
+
+
+#items-table a,
+#items-table a:visited {
+    color: steelblue;
+    text-decoration: none;
+}
+
+#items-table a:hover {
+    color: royalblue;
+    text-decoration: underline;
+}
+
+#items-table-wrapper {
+    margin-top: 30px;
+}
