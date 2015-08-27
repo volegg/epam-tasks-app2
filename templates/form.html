@@ -14,38 +14,44 @@
             color: red;
         }
 
+
+        .items-form {
+            width: 100%;
+            max-width: 768px;
+            font-size:14px;
+            margin:auto;
+            padding-bottom: 1em;
+            border: 1px solid #E1E1E1;
+        }
+
         .items-form .item-wrapper {
             margin: auto;
-            width:90%;
+            width:96%;
         }
 
         .items-form .item-wrapper label {
             display: block;
             padding: 10px 0;
             font-size: 0.8em;
+            font-weight: bold;
         }
 
         .items-form .item-wrapper input {
             width:100%;
-            font-size: 1.2em;
-        }
-
-        .items-form {
-            width: 30%;
-            margin:auto;
-            padding-bottom: 1em;
-            border: 1px solid darkgrey;
+            font-size: 1.6em;
+            border:2px #E1E1E1 solid;
         }
 
         .items-form .item-add-btn {
-            float:right;
-            margin-right: 5%;
-            margin-top: 2em;
+            float: right;
+            margin-right: 2%;
+            margin-top: 1.5em;
             font-size: 1.5em;
             color: white;
-            background-color:dodgerblue;
-            border:none;
-            width:4em;
+            background-color: #0299c2;
+            border: none;
+            width: 4.5em;
+            padding: 0.3em;
         }
 
         .clear-fix {
@@ -56,18 +62,19 @@
             margin-top: -10px;
             margin-left: 20px;
             background-color: white;
-            width:80px;
-            font-size: 0.9em;
+            width:90px;
+            font-size: 1.2em;
             font-weight: bold;
             text-align: center;
         }
 
         #items-table {
             margin: auto;
-            width: 40%;
+            width: 100%;
+            max-width: 768px;
             text-align: left;
             border-spacing: 0;
-            border: 1px solid darkgray;
+            border: 1px solid #E1E1E1;
             border-top: none;
 
         }
@@ -75,25 +82,30 @@
         #items-table caption {
             font-size: 0.9em;
             font-weight: bold;
-            color: dimgray;
+            color: #9E9FA1;
+            font-family:  serif;
             text-align: left;
-            border: 1px solid darkgray;
+            border: 1px solid #E1E1E1;
             border-bottom: none;
             padding: 1em;
 
         }
 
         #items-table td {
-            border-top: 1px solid darkgray;
+            border-top: 1px solid #E1E1E1;
             padding: 1.5%;
         }
 
+        .order-number{
+            font-weight: bold;
+        }
+
         #items-table tr:nth-child(odd) {
-            background-color: #eee;
+            background-color: #FAFAFA;
         }
 
         #items-table tr:hover {
-            background-color: darkgray;
+            background-color: #F6F6F6;
         }
 
         #items-table .header:hover {
@@ -101,7 +113,7 @@
         }
 
         #items-table th {
-            border-bottom: 1px solid darkgray;
+            border-bottom: 1px solid #E1E1E1;
             padding: 1.5%;
             text-transform: capitalize;
         }
@@ -109,12 +121,12 @@
 
         #items-table a,
         #items-table a:visited {
-            color: steelblue;
+            color: #3B90C6;
             text-decoration: none;
         }
 
         #items-table a:hover {
-            color: royalblue;
+            color: #2A5B89;
             text-decoration: underline;
         }
 
@@ -204,7 +216,10 @@
 
     function addItemToTable(item, table) {
         var row = document.createElement('tr');
-        row.appendChild(document.createElement('td')).innerText = table.childNodes.length-1;
+        var numberCell =  document.createElement('td');
+        numberCell.innerText = table.childNodes.length-1;
+        numberCell.setAttribute('class','order-number');
+        row.appendChild(numberCell);
         for(key in item) {
             if(item.hasOwnProperty(key))
                 row.appendChild(document.createElement('td')).innerText = item[key];
