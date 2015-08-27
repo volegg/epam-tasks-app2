@@ -302,6 +302,10 @@
             var item = JSON.parse(this.responseText);
             if (!!item) {
                 var table = document.getElementById('items-table');
+                if (document.getElementById('items-table').children.length < 3){
+                    refreshTable([item]);
+                }
+
                 addItemToTable(item, table);
                 clearForm();
             }
@@ -409,6 +413,7 @@
             }
         }
     }
+
 })();
 </script>
 
