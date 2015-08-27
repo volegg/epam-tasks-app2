@@ -1,4 +1,4 @@
-/*Validate form*/
+/* Validate form client-run script with AJAX and DOM-mutation functionality. */
 var ClientScript = function () {
   var options,
       model,
@@ -6,6 +6,7 @@ var ClientScript = function () {
       handler,
       listener;
 
+  /* Options namespace: contains globally accessible variables */
   options = {
     form: document.querySelector('form'),
     inputErrorClass: 'error-bottom',
@@ -13,6 +14,7 @@ var ClientScript = function () {
     errorSpan: 'span',
     patternEmail: /^(\w+)(@\w+)(\.\w+)$/gi,
     patternPhone: /^(\+375)([\d]{9})$|^(8017)([\d]{7})$/gi,
+    patternPhonePlus: /^(375)([\d]{9})$/gi,
     phoneError: 'Phone number should match on of the following patterns: +375ZZXXYYY or 8017XXXYYYY',
     emailError: 'Email should match the following pattern: foo@bar.baz',
     emptyError: 'This field must be filled',
@@ -23,15 +25,16 @@ var ClientScript = function () {
     tableHeader: ['#','Name','Email','Phone','']
   };
 
+  /* Model namespace: contains major logic and functionality of the client-side app. */
   model = {
-    /*Change error message in existing item*/
+    /* Change error message in existing error items. */
     changeErrorMessage: function(errorItem, errorMessage) {
       if (errorItem) {
         errorItem[0].innerText = errorMessage;
       }
     },
 
-    /*Create new error item*/
+    /* Create new error items. */
     createErrorItem: function(parent, target, selector) {
       var errorItem = document.createElement(options.errorSpan);
 
@@ -40,7 +43,8 @@ var ClientScript = function () {
       return parent.querySelectorAll('.' + selector);
     },
 
-    /*Get NodeList of error items, False if none*/
+    /* Return NodeList of error items.
+     Returns 'false' if none. */
     getErrorItems: function(selector, target) {
       var target = target || options.form,
           errorItem = target.parentNode.querySelectorAll('.' + selector);
@@ -48,11 +52,13 @@ var ClientScript = function () {
       return (errorItem.length) ? errorItem : false;
     },
 
-    /*Get NodeList of empty error items*/
+    /* Return NodeList of empty error items. */
     getEmptyItems: function(selector, option) {
       var itemArray = options.form.querySelectorAll(selector),
           emptyArray = [];
 
+      /* Iterate through NodeList of error items.
+       * Return empty ones. */
       for (var i = 0; i < itemArray.length; i++) {
         if (itemArray[i].value === '') {
           emptyArray.push(i);
@@ -63,10 +69,13 @@ var ClientScript = function () {
       return emptyArray;
     },
 
-    /*Return error mesage*/
+    /* Return error mesage depending on:
+    *   - error type;
+    *   - error item. */
     chooseErrorMessage: function(target) {
       var errorMessage = '';
 
+      /* Returns input-level errors. */
       if (target.tagName === 'INPUT') {
         if (target.name === 'email') {
           if (!target.value.match(options.patternEmail)) {
@@ -79,6 +88,7 @@ var ClientScript = function () {
         } else if (target.value === '') {
           errorMessage = options.emptyError;
         }
+      /* Returns form-level errors. */
       } else {
         var emptyItems = model.getEmptyItems('input'),
             errorItems = model.getEmptyItems('.' + options.inputErrorClass, true);
@@ -94,7 +104,7 @@ var ClientScript = function () {
       return errorMessage;
     },
 
-    /*Check form inputs for errors*/
+    /* Check input elements for validation errors. */
     checkInputItems: function(target) {
       var errorItem,
           errorMessage = model.chooseErrorMessage(target),
@@ -104,14 +114,16 @@ var ClientScript = function () {
       if (!errorItem) errorItem = model.createErrorItem(target.parentNode, target, errorClass);
       model.changeErrorMessage(errorItem, errorMessage);
 
+      /* Disable 'Submit' button if errors exist. */
       if (errorMessage !== '') {
         document.getElementById(options.submitButtonId).className = 'disabled';
       }
 
+      /* Validate form for errors. */
       model.checkForm(document.getElementById(options.submitButtonId));
     },
 
-    /*Check form for errors*/
+    /* Check form for validation errors. */
     checkForm: function(target, evt) {
       var errorMessage = model.chooseErrorMessage(target),
           errorClass = options.formErrorClass,
@@ -124,14 +136,16 @@ var ClientScript = function () {
 
       if (typeof(evt) !== 'undefined') {
         evt.preventDefault();
+
+        /* Initialize specific AJAX request if from is valid and use clicked on 'Submit' button. */
         if (evt.type === 'click' && target.className === 'enabled') {
           target.className = 'disabled';
-          ajax.httpClientRequest(false);
+          ajax.httpClientRequest('POST');
         }
       }
     },
 
-    /*Create table*/
+    /* Create data table in DOM. */
     createTable: function(data) {
       var table = document.createElement('table'),
           tbody = document.createElement('tbody'),
@@ -150,12 +164,13 @@ var ClientScript = function () {
       options.form.parentNode.insertBefore(table, options.form.nextSibling);
     },
 
-    /*Create row for table*/
+    /* Create row in data table. */
     createRow: function(option, data) {
       var trow = document.createElement('tr'), el;
 
-      (option) ? el = 'th' : el = 'td';
+      el = (option) ? 'th' : 'td';
 
+      /* Function to get data for row from server response JSON object. */
       function getRowData(i) {
         if (i === 0) {
           return (!document.querySelector('td')) ? 1 : document.querySelectorAll('tr').length ;
@@ -164,42 +179,73 @@ var ClientScript = function () {
         } else if (i === 2) {
           return data.email;
         } else if (i === 3) {
-          return data.phone;
+          return (JSON.stringify(data.phone).match(options.patternPhonePlus))? '+' + data.phone : data.phone;
         } else if (i === 4) {
-          var removeTag = '<a href="#' + data.id + '">Remove</a>';
+          var removeTag = '<a href="#' + data.id + '" class="remove" id="' + data.id + '">Remove</a>';
           return removeTag;
         }
       }
 
+      /* Iterate through row cells and set inner cell data. */
       for (var i = 0; i < 5; i++) {
         var tcell = document.createElement(el);
-        (option) ? tcell.innerHTML = options.tableHeader[i] : tcell.innerHTML = getRowData(i);
+        tcell.innerHTML = (option) ? options.tableHeader[i] : getRowData(i);
         trow.appendChild(tcell);
       }
 
       return trow;
-    }
-  },
+    },
 
+    /* Delete row from data table.
+    * If the last row was deleted then delete the whole table. */
+    deleteRow: function(id) {
+      var anchor = document.getElementById(id),
+          cell = anchor.parentNode,
+          row = cell.parentNode,
+          body = row.parentNode,
+          table = body.parentNode;
+
+      body.removeChild(row);
+
+      if (body.querySelectorAll('tr').length === 0) {
+        table.parentNode.removeChild(table);
+      } else {
+        /* Call table re-index function. */
+        model.reindexTable(body);
+      }
+    },
+
+    /* Re-index order number column in data table. */
+    reindexTable: function(body) {
+      var rowArray = body.childNodes;
+
+      /* Iterate through table rows and re-index cell values. */
+      for (var i = 0; i < rowArray.length; i++) {
+        if (rowArray[i].firstChild.innerText !== i + 1) rowArray[i].firstChild.innerText = i + 1;
+      }
+    }
+  };
+
+  /* AJAX namespace: handles xmlHttpRequest logic and fucntionality. */
   ajax = {
-    /*Get form data*/
+    /* Return form data. */
     getFormData: function(form, option) {
       var name = form.querySelector('input[name="name"]').value,
           email = form.querySelector('input[name="email"]').value,
           phone = form.querySelector('input[name="phone"]').value,
           data;
 
-      return (!option) ? data = 'name=' + name +'&email=' + email + '&phone=' + phone : data = [name, email, phone];
+      return data = (!option) ? 'name=' + name +'&email=' + email + '&phone=' + phone : [name, email, phone];
     },
 
-    /*Clear form after successful post event*/
+    /* Clear form from data after successful post event. */
     clearForm: function(form) {
       form.querySelector('input[name="name"]').value = '';
       form.querySelector('input[name="email"]').value = '';
       form.querySelector('input[name="phone"]').value = '';
     },
 
-    /*Create xmlHttpRequest instance*/
+    /* Create xmlHttpRequest instance. */
     createHttpRequest: function() {
       var httpRequest;
 
@@ -225,23 +271,21 @@ var ClientScript = function () {
       }
     },
 
-    /*Make AJAX request to server
-    * option = true triggers GET method
-    * option = false triggers POST method*/
-    compileRequest: function(url, option) {
+    /* Make AJAX request to server.
+    * 'id' - optional, required for 'DELETE' method only. */
+    compileRequest: function(url, method, id) {
       var httpRequest = ajax.createHttpRequest(),
-          postData = ajax.getFormData(options.form, false),
-          method;
+          postData = ajax.getFormData(options.form, false);
 
-      (option) ? method = 'GET' : method = 'POST';
-
+      /* Handle server response. */
       httpRequest.onreadystatechange = function() {
         if (httpRequest.readyState === 4) {
           if (httpRequest.status === 200) {
             var tbody = document.querySelector('tbody'),
                 response = httpRequest.responseText;
 
-            function loadResponseData(response) {
+            /* (Asynchronous) Function to write server response data to DOM if successful. */
+            function writeResponseData(response) {
               var tbody = document.querySelector('tbody');
               if (!tbody) {
                 model.createTable(response);
@@ -253,18 +297,21 @@ var ClientScript = function () {
             if (response.length > 3) {
               response = JSON.parse(response);
 
-              if (option) {
-
-              } else {
+              if (method === 'POST') {
                 ajax.clearForm(options.form);
               }
 
-              if (!Array.isArray(response)) {
-                loadResponseData(response);
-              } else {
-                for (var i = 0; i < response.length; i++) {
-                  loadResponseData(response[i]);
+              if (method !== 'DELETE') {
+                if (!Array.isArray(response)) {
+                  writeResponseData(response);
+                } else {
+                  for (var i = 0; i < response.length; i++) {
+                    writeResponseData(response[i]);
+                  }
                 }
+              } else if (method === 'DELETE') {
+                model.deleteRow(id);
+                alert('Item deleted');
               }
             }
           } else {
@@ -275,23 +322,27 @@ var ClientScript = function () {
 
       httpRequest.open(method, url);
       httpRequest.setRequestHeader('Content-type', 'application/json');
-      (option) ? httpRequest.send() : httpRequest.send(postData);
+      (method === 'GET') ? httpRequest.send() : httpRequest.send(postData);
     },
 
-    /*Start AJAX request
-    * option = true triggers GET method
-    * option = false triggers POST method*/
-    httpClientRequest: function(option) {
+    /* Start AJAX request:
+     * id - optional, required for 'DELETE' method only. */
+    httpClientRequest: function(method, id) {
       var baseUrl = 'http://localhost:8888',
           postUrl = '/items',
           url;
 
       url = baseUrl + postUrl;
 
-      ajax.compileRequest(url, option);
-    }
-  },
+      if (method === 'DELETE') {
+        url = url + '?id=' + id;
+      }
 
+      ajax.compileRequest(url, method, id);
+    }
+  };
+
+  /* Handler namespace: handles script operation to respective functions/methods. */
   handler = {
     formValidate: function(evt) {
       var target = evt.target;
@@ -308,23 +359,26 @@ var ClientScript = function () {
         model.checkForm(target, evt);
       } else if (target.tagName === 'INPUT') {
         model.checkInputItems(target);
+      } else if (target.tagName === 'A' && target.className === 'remove') {
+        ajax.httpClientRequest('DELETE', target.id);
       }
     },
 
-    loadData: function(evt) {
-      ajax.httpClientRequest(true)
+    loadData: function() {
+      ajax.httpClientRequest('GET')
     }
   };
 
+  /* (Asynchronous) Listener namespace: initiates event listeners. */
   listener = {
     init: function() {
       document.addEventListener('keyup', handler.formValidate);
       document.addEventListener('click', handler.formClick);
-      document.addEventListener('DOMContentLoaded', handler.loadData)
+      document.addEventListener('DOMContentLoaded', handler.loadData);
     }
   };
 
-  // Return object
+  /* Return object */
   return {
     model: model,
     ajax: ajax,
@@ -334,4 +388,5 @@ var ClientScript = function () {
 
 }();
 
+/* Initialiaze object */
 ClientScript.listener.init();
