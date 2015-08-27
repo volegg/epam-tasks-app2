@@ -195,8 +195,8 @@
 
     var form = document.forms.addItem;
     form.onsubmit = onAddItemSubmit;
-    form.email.onchange = function(){validateForm(form)};
-    form.phone.onchange = function(){validateForm(form)};
+    form.email.onchange = function(){validateForm(form, true)};
+    form.phone.onchange = function(){validateForm(form, true)};
 
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "/items", true);
@@ -336,18 +336,23 @@
         };
     }
 
-    function validateForm(form) {
+    function validateForm(form, onchange) {
         clearMessages();
         var res = true;
         if (!isValidEmail(form.email.value)) {
-            setErrorMessage('email-wrapper', 'Email format is incorrect');;
-            res = false;
+            if( !(form.email.value.length == 0 && !!onchange)) {
+                setErrorMessage('email-wrapper', 'Email format is incorrect');
+                res = false
+            }
         }
 
         if (!isValidPhone(form.phone.value)) {
-            setErrorMessage('phone-wrapper', 'Phone format is incorrect');
-            res = false
+            if(!(form.phone.value.length == 0 && !!onchange)) {
+                setErrorMessage('phone-wrapper', 'Phone format is incorrect');
+                res = false
+            }
         }
+
         return res;
     }
 
