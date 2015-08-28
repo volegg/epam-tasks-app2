@@ -172,17 +172,18 @@ var ClientScript = function () {
 
       /* Function to get data for row from server response JSON object. */
       function getRowData(i) {
-        if (i === 0) {
-          return (!document.querySelector('td')) ? 1 : document.querySelectorAll('tr').length ;
-        } else if (i === 1) {
-          return data.name;
-        } else if (i === 2) {
-          return data.email;
-        } else if (i === 3) {
-          return (JSON.stringify(data.phone).match(options.patternPhonePlus))? '+' + data.phone : data.phone;
-        } else if (i === 4) {
-          var removeTag = '<a href="#' + data.id + '" class="remove" id="' + data.id + '">Remove</a>';
-          return removeTag;
+        switch (i) {
+          case 0:
+            return (!document.querySelector('td')) ? 1 : document.querySelectorAll('tr').length ;
+          case 1:
+            return data.name;
+          case 2:
+            return data.email;
+          case 3:
+            return (JSON.stringify(data.phone).match(options.patternPhonePlus))? '+' + data.phone : data.phone;
+          case 4:
+            var removeTag = '<a href="#' + data.id + '" class="remove" id="' + data.id + '">Remove</a>';
+            return removeTag;
         }
       }
 
