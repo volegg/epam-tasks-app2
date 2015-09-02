@@ -254,8 +254,16 @@ staffApp.controller('itemsCtrl', function ($scope, $http) {
     $http.get('/items').success(function(data){
         $scope.items = data;
     });
+
+    $scope.deleteItem = function(id) {
+        $http.delete('/items?id='+id).success(function(data){
+            for (index in $scope.items) {
+                if ($scope.items.hasOwnProperty(index) && $scope.items[index].id == id){
+                    delete $scope.items[index];
+                }
+            }
+        });
+    }
+
 });
 
-function onDelete(id, envent) {
-    console.log('delete item: ' + id);
-}

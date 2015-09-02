@@ -6,6 +6,7 @@
     <title>Form</title>
     <link rel="stylesheet" href="front/form.css">
     <script src="https://code.angularjs.org/1.2.14/angular.js"></script>
+    <script language="JavaScript" src="/front/form.js"></script>
 </head>
 <body ng-controller="itemsCtrl">
     <form class="items-form" name="addItem" method="post" action="/items">
@@ -36,17 +37,17 @@
                 <th ng-repeat="(key,value) in items[0]">{{ key }} </th>
                 <th></th>
             </tr>
-            <tr ng-repeat="item in items">
+            <tr ng-repeat="item in items" ng-show="!!item">
                 <td>{{$index + 1}}</td>
                 <td ng-repeat="value in item">{{ value }} </td>
-                <td ><a class="item-delete" href="#" ng-click="onDelete.bind(this,item.id)">Remove</a></td>
+                <td ><a class="item-delete" href="" ng-click="deleteItem(item.id);">Remove</a></td>
             </tr>
         </table>
     </div>
 
 </body>
 
-<script language="JavaScript" src="/front/form.js"></script>
+
 
 </html>
 
