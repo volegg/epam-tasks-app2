@@ -9,19 +9,19 @@
     <script language="JavaScript" src="/front/form.js"></script>
 </head>
 <body ng-controller="itemsCtrl">
-    <form class="items-form" name="addItem" method="post" action="/items">
+    <form class="items-form" name="addItem"  ng-submit="addNewItem(newItem)">
         <div class="items-form-title">Add item</div>
         <div class="item-wrapper">
             <label for="item-name"  id="name-label">Name:</label>
-            <input id="item-name" type="text" name="name" />
+            <input id="item-name" type="text" name="name" ng-model="newItem.name"/>
         </div>
         <div class="item-wrapper" id="email-wrapper">
             <label for="item-email">Email:</label>
-            <input id="item-email" type="text" name="email" placeholder="your@email.com" />
+            <input id="item-email" type="text" name="email" placeholder="your@email.com" ng-model="newItem.email" />
         </div>
         <div class="item-wrapper" id="phone-wrapper">
             <label for="item-phone" >Phone:</label>
-            <input id="item-phone" type="text" name="phone" placeholder="+375ZZXXXYYYY" />
+            <input id="item-phone" type="text" name="phone" placeholder="+375ZZXXXYYYY" ng-model="newItem.phone"/>
         </div>
         <button class="item-add-btn" name="btnSubmit"  type="submit">Add</button>
         <div class="clear-fix"></div>
