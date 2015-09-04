@@ -9,7 +9,7 @@
     <script language="JavaScript" src="/front/form.js"></script>
 </head>
 <body ng-controller="itemsCtrl">
-    <form class="items-form" name="addItem"  ng-submit="addNewItem(newItem)">
+    <form class="items-form" name="addItem"  ng-submit="addItem.$valid && addNewItem(newItem)" novalidate>
         <div class="items-form-title">Add item</div>
         <div class="item-wrapper">
             <label for="item-name"  id="name-label">Name:</label>
@@ -17,11 +17,13 @@
         </div>
         <div class="item-wrapper" id="email-wrapper">
             <label for="item-email">Email:</label>
-            <input id="item-email" type="text" name="email" placeholder="your@email.com" ng-model="newItem.email" />
+            <input id="item-email" type="email" required name="email" placeholder="your@email.com" ng-model="newItem.email" />
+            <span class="error-message">Email format is incorrect</span>
         </div>
         <div class="item-wrapper" id="phone-wrapper">
             <label for="item-phone" >Phone:</label>
-            <input id="item-phone" type="text" name="phone" placeholder="+375ZZXXXYYYY" ng-model="newItem.phone"/>
+            <input id="item-phone" type="text" required ng-pattern="/(^\+375\d{9}$)|(^8017\d{7}$)/" name="phone" placeholder="+375ZZXXXYYYY" ng-model="newItem.phone"/>
+            <span class="error-message">Phone format is incorrect</span>
         </div>
         <button class="item-add-btn" name="btnSubmit"  type="submit">Add</button>
         <div class="clear-fix"></div>
