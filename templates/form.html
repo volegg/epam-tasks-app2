@@ -39,7 +39,7 @@
                 <th ng-repeat="(key,value) in items[0]">{{ key }} </th>
                 <th></th>
             </tr>
-            <tr ng-repeat="item in items" ng-show="!!item">
+            <tr ng-repeat="item in items track by $index" ng-show="!!item" >
                 <td>{{$index + 1}}</td>
                 <td ng-repeat="value in item">{{ value }} </td>
                 <td ><a class="item-delete" href="" ng-click="deleteItem(item.id);">Remove</a></td>
