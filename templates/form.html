@@ -216,12 +216,13 @@
 
     function addItemToTable(item, table) {
         var row = document.createElement('tr');
+        row.itemId = item.id;
         var numberCell =  document.createElement('td');
         numberCell.innerText = table.childNodes.length-1;
         numberCell.setAttribute('class','order-number');
         row.appendChild(numberCell);
         for(key in item) {
-            if(item.hasOwnProperty(key))
+            if(item.hasOwnProperty(key) && key != 'id')
                 row.appendChild(document.createElement('td')).innerText = item[key];
         }
 
@@ -244,7 +245,7 @@
         headerRow.setAttribute('class', 'header')
         headerRow.appendChild(document.createElement('th')).innerText = '#';
         for(key in items[0]) {
-            if(items[0].hasOwnProperty(key))
+            if(items[0].hasOwnProperty(key) && key != 'id')
                 headerRow.appendChild(document.createElement('th')).innerText = key;
         }
         headerRow.appendChild(document.createElement('th')).innerText = '';
@@ -264,22 +265,12 @@
         renumerateRows(document.getElementById('items-table').children);
     }
 
-
-    function getIdIndex(header) {
-        for (var i=0; i<header.cells.length; i++) {
-            if(header.cells[i].innerText.toLowerCase() === 'id') {
-                return i;
-            }
-        }
-
-        return null;
-    }
+    
     function deleteItem(itemId) {
         var table = document.getElementById('items-table');
         var rows = table.children;
-        var idIndex = getIdIndex(rows[1]);
         for(var i=1; i<rows.length; i++){
-            if(rows[i].cells[idIndex].innerText == itemId ) {
+            if(rows[i].itemId == itemId ) {
                 table.children[i].parentElement.removeChild(table.children[i]);
                 return true;
             }
