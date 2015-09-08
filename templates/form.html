@@ -17,11 +17,16 @@
 
         .items-form {
             width: 100%;
-            max-width: 768px;
             font-size:14px;
             margin:auto;
             padding-bottom: 1em;
             border: 1px solid #E1E1E1;
+        }
+
+        @media (min-width: 768px) {
+            .items-form {
+                max-width: 500px;
+            }
         }
 
         .items-form .item-wrapper {
@@ -265,7 +270,7 @@
         renumerateRows(document.getElementById('items-table').children);
     }
 
-    
+
     function deleteItem(itemId) {
         var table = document.getElementById('items-table');
         var rows = table.children;
