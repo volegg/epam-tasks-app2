@@ -7,22 +7,25 @@
     <title>Form</title>
 </head>
 <body>
+  <div class="container">
     <h4>Add Item</h4>
     <form>
-        <label>
-            Name:
-            <input type="text" name="name" />
-        </label>
-        <label>
-            Email:
-            <input type="text" name="email" />
-        </label>
-        <label>
-            Phone:
-            <input type="text" name="phone" />
-        </label>
-        <button id="ajaxButton" class="disabled" type="submit">Add</button>
+      <label>
+        Name:
+        <input type="text" name="name" value="Input name"/>
+      </label>
+      <label>
+        Email:
+        <input type="text" name="email" value="Your email address"/>
+      </label>
+      <label>
+        Phone:
+        <input type="text" name="phone" value="+375ZZXXXYYYY"/>
+      </label>
+      <button id="ajaxButton" class="disabled" type="submit">Add</button>
     </form>
+  </div>
     <script src="js/script.js"></script>
+    <script src="js/angular.js"></script>
 </body>
 </html>
