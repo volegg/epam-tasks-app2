@@ -20,8 +20,6 @@ staffApp.controller('itemsCtrl', function ($scope, $http) {
     }
 
 
-
-
     emptyNewItem();
 
     $scope.addNewItem = function(item){
