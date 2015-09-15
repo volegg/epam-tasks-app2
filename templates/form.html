@@ -1,31 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="app">
 <head>
-    <meta charset="UTF-8">
-    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
-    <link rel="stylesheet" href="css/style.css"/>
-    <title>Form</title>
+  <meta charset="UTF-8">
+  <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+  <link rel="stylesheet" href="css/style.css"/>
+  <script src="js/angular.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/controllers.js.js"></script>
+  <title>Form</title>
 </head>
 <body>
   <div class="container">
     <h4>Add Item</h4>
-    <form>
-      <label>
-        Name:
-        <input type="text" name="name" value="Input name"/>
-      </label>
-      <label>
-        Email:
-        <input type="text" name="email" value="Your email address"/>
-      </label>
-      <label>
-        Phone:
-        <input type="text" name="phone" value="+375ZZXXXYYYY"/>
+    <form ng-controller="FormController as form" novalidate>
+      <label ng-repeat="item in form.items">
+        {{item.name}}
+        <input type="text" name="{{item.type}}" value="{{item.value}}" required/>
       </label>
       <button id="ajaxButton" class="disabled" type="submit">Add</button>
     </form>
+    <table ng-controller="TableController as table" id="ajaxTable" ng-hide="true" ng-show="!!table.rows.length">
+      <thead>
+        <tr>
+          <th ng-repeat="header in table.headers">
+            {{header.value}}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="(key, value) in table.rows">
+          <td>
+            {{key + 1}}
+          </td>
+          <td ng-repeat="(key, value) in value" ng-if="key !== 'id'">
+            {{value}}
+          </td>
+          <td ng-repeat="(key, value) in value" ng-if="key === 'id'">
+            <a href="#" ng-click="table.deleteItem(value);" id="{{value}}">Remove</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-    <script src="js/script.js"></script>
-    <script src="js/angular.js"></script>
+  <!--<script src="js/formScript.js"></script>-->
 </body>
 </html>
