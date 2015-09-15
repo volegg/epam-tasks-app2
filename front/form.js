@@ -19,6 +19,9 @@ staffApp.controller('itemsCtrl', function ($scope, $http) {
         $scope.newItem.phone = '';
     }
 
+
+
+
     emptyNewItem();
 
     $scope.addNewItem = function(item){
@@ -35,6 +38,7 @@ staffApp.controller('itemsCtrl', function ($scope, $http) {
         $http.post('/items', postData).success(function(data){
             $scope.items.push(data);
             emptyNewItem();
+            $scope.addItem.$setPristine();
         })
     }
 

@@ -2,14 +2,25 @@ body {
     font-family: Arial;
     font-size: 13px;
 }
+.error-message {
+    color: red;
+    display:none;
+}
+input.ng-invalid.ng-dirty + span.error-message {
+    display:inline;
+}
 
 .items-form {
     width: 100%;
-    max-width: 768px;
     font-size:14px;
     margin:auto;
     padding-bottom: 1em;
     border: 1px solid #E1E1E1;
+}
+@media (min-width: 768px) {
+    .items-form {
+        max-width: 500px;
+    }
 }
 .items-form .item-wrapper {
     margin: auto;
@@ -100,14 +111,4 @@ body {
 }
 #items-table-wrapper {
     margin-top: 30px;
-}
-
-
-.error-message {
-    color: red;
-    display:none;
-}
-
-input.ng-invalid.ng-dirty + span.error-message {
-    display:inline;
 }
