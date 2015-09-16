@@ -2,7 +2,6 @@
   angular
     .module('app', [])
     .controller('FormController', FormController)
-    .controller('TableController', TableController)
     .directive('formvalidate', formvalidate);
 
   var inputs = [
@@ -55,31 +54,26 @@
 
     form.submitData = function() {
       var data = 'name=' + form.model['name'] +'&email=' + form.model['email'] + '&phone=' + form.model['phone'];
-      console.log(form.items);
-      console.log(data);
 
       $http.post('http://localhost:8888/items', data).success(function(data) {
         console.log('Posted', data);
       });
-    }
-  }
+      form.getData();
+    };
 
-  function TableController($http) {
-    var table = this;
-
-    table.getData = function() {
+    form.getData = function() {
       $http.get('http://localhost:8888/items').success(function(data) {
-        table.rows = data;
+        form.rows = data;
 
-        if (table.rows.length !== 0) {
-          table.headers = headers;
+        if (form.rows.length !== 0) {
+          form.headers = headers;
         }
       });
     };
 
-    table.deleteItem = function(id) {
+    form.deleteItem = function(id) {
       $http.delete('http://localhost:8888/items/?id=' + id).success(function() {
-        table.getData();
+        form.getData();
         alert('Item deleted');
       });
     };

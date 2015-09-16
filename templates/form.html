@@ -10,9 +10,9 @@
   <title>Form</title>
 </head>
 <body>
-  <div class="container">
+  <div class="container" ng-controller="FormController as form">
     <h4>Add Item</h4>
-    <form ng-controller="FormController as form" name="ajaxForm" novalidate>
+    <form name="ajaxForm" novalidate>
       <label ng-repeat="item in form.items">
         {{item.name}}
         <input type="text" name="{{item.type}}" placeholder="{{item.placeholder}}" ng-model="form.model[item.type]" formvalidate required/>
@@ -21,16 +21,16 @@
       <span class="error-form"></span>
       <button id="ajaxButton" type="submit" ng-disabled="ajaxForm.$invalid" ng-click="form.submitData()">Add</button>
     </form>
-    <table ng-controller="TableController as table" id="ajaxTable" ng-hide="true" ng-show="!!table.rows.length" ng-init="table.getData()">
+    <table id="ajaxTable" ng-hide="true" ng-show="!!form.rows.length" ng-init="form.getData()">
       <thead>
         <tr>
-          <th ng-repeat="header in table.headers">
+          <th ng-repeat="header in form.headers">
             {{header.value}}
           </th>
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="(pKey, pValue) in table.rows track by pKey">
+        <tr ng-repeat="(pKey, pValue) in form.rows track by pKey">
           <td ng-repeat="(key, value) in pValue" ng-if="pKey === $index">
             {{$index + 1}}
           </td>
@@ -41,7 +41,7 @@
             {{'+' + value}}
           </td>
           <td ng-repeat="(key, value) in pValue" ng-if="key === 'id'">
-            <a href="#{{value}}" ng-click="table.deleteItem(value, pKey)">Remove</a>
+            <a href="#{{value}}" ng-click="form.deleteItem(value, pKey)">Remove</a>
           </td>
         </tr>
       </tbody>
