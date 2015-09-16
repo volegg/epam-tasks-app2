@@ -10,21 +10,25 @@
         'name': 'Name:',
         'type': 'name',
         'placeholder': 'Input name',
-        'error': 'Enter correct name'
+        'error': 'Enter correct name',
+        'model': ''
       },
       {
         'name': 'Email:',
         'type': 'email',
         'placeholder': 'Your email address',
-        'error': 'Enter valid e-mail'
+        'error': 'Enter valid e-mail',
+        'model': ''
       },
       {
         'name': 'Phone:',
         'type': 'phone',
         'placeholder': '+375ZZXXXYYYY',
-        'error': 'Enter valid phone'
+        'error': 'Enter valid phone',
+        'model': ''
       }
     ],
+    model = {},
     headers = [
       {
         'value': '#'
@@ -43,24 +47,21 @@
       }
     ];
 
-  function FormController() {
+  function FormController($http) {
     var form = this;
+
     form.items = inputs;
+    form.model = model;
 
-    form.formValidate = function() {
+    form.submitData = function() {
+      var data = 'name=' + form.model['name'] +'&email=' + form.model['email'] + '&phone=' + form.model['phone'];
+      console.log(form.items);
+      console.log(data);
 
-    };
-
-    form.getData =function() {
-
-    }
-
-    form.addItem = function() {
-      $http.delete('http://localhost:8888/items/?id=' + id).success(function() {
-        table.getData();
-        alert('Item deleted');
+      $http.post('http://localhost:8888/items', data).success(function(data) {
+        console.log('Posted', data);
       });
-    };
+    }
   }
 
   function TableController($http) {
@@ -89,7 +90,7 @@
       require: 'ngModel',
       link: function(scope, elm, attrs, ctrl) {
         ctrl.$parsers.unshift(function(arg) {
-          var validExp;
+          var validExp, data;
 
           if (elm[0].name === 'name') {
             validExp = /^(\w+)$/;
@@ -101,7 +102,7 @@
 
           if (validExp.test(arg)) {
             ctrl.$setValidity('formvalidate', true);
-            return arg.toUpperCase();
+            return arg;
           } else {
             ctrl.$setValidity('formvalidate', false);
             return undefined;

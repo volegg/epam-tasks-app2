@@ -64,11 +64,11 @@ button {
   margin-top: 15px;
 }
 
-button.enabled {
+button {
   background-color: #0296c1;
 }
 
-button.disabled {
+button[disabled] {
   background-color: rgba(32, 79, 109, 0.38);
 }
 

@@ -15,11 +15,11 @@
     <form ng-controller="FormController as form" name="ajaxForm" novalidate>
       <label ng-repeat="item in form.items">
         {{item.name}}
-        <input type="text" name="{{item.type}}" placeholder="{{item.placeholder}}" ng-model="formvalidate" formvalidate required/>
+        <input type="text" name="{{item.type}}" placeholder="{{item.placeholder}}" ng-model="form.model[item.type]" formvalidate required/>
         <span ng-show="ajaxForm.{{item.type}}.$error.formvalidate" class="error-bottom">{{item.error}}</span>
       </label>
       <span class="error-form"></span>
-      <button id="ajaxButton" class="disabled" type="submit">Add</button>
+      <button id="ajaxButton" type="submit" ng-disabled="ajaxForm.$invalid" ng-click="form.submitData()">Add</button>
     </form>
     <table ng-controller="TableController as table" id="ajaxTable" ng-hide="true" ng-show="!!table.rows.length" ng-init="table.getData()">
       <thead>
