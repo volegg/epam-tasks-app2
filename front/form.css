@@ -12,16 +12,20 @@ input.ng-invalid.ng-dirty + span.error-message {
 
 .items-form{
     font-size:14px;
+    padding:0px;
+    margin-bottom: 20px;
 }
+
 .items-form fieldset legend {
     border:none;
     background-color: white;
     width:90px;
-    font-size: 1em;
+    font-size: 1.1em;
     font-weight: bold;
     text-align: left;
     padding-left: 10px;
     margin-left: 10px;
+    margin-bottom:0px;
 }
 
 
@@ -31,18 +35,22 @@ input.ng-invalid.ng-dirty + span.error-message {
 }
 
 @media (min-width: 768px) {
-    container.form {
-        max-width: 500px;
+    .container.form {
+        width: 500px;
+    }
+    .container.table {
+        width: 800px;
     }
 }
-.items-form .form-group {
-    width:96%;
-}
+
+
+
 .items-form .form-group label {
     display: block;
     padding: 10px 0;
-    font-size: 0.8em;
-    font-weight: bold;
+    font-size: 0.9em;
+    font-weight: normal;
+    margin-bottom:0px;
 }
 
 .items-form .form-group input {
@@ -51,23 +59,17 @@ input.ng-invalid.ng-dirty + span.error-message {
     border:2px #E1E1E1 solid;
 }
 .items-form .item-add-btn {
-    float: right;
-    margin-right: 2%;
-    margin-top: 1.5em;
+    margin-top: 0.5em;
     font-size: 1.5em;
     color: white;
     background-color: #0299c2;
     border: none;
-    width: 4.5em;
-    padding: 0.3em;
+    padding: 0.2em;
+    float: right;
+    margin-right: 0.9em;
 }
 .clear-fix {
     clear:both;
-}
-
-
-.container.table {
-    max-width: 768px;
 }
 
 
@@ -94,15 +96,18 @@ input.ng-invalid.ng-dirty + span.error-message {
 .order-number{
     font-weight: bold;
 }
-.items-table tr:nth-child(odd) {
+.items-table tr:nth-child(even) {
     background-color: #FAFAFA;
 }
 .items-table tr:hover {
     background-color: #F6F6F6;
 }
-.items-table .header:hover {
+.items-table .header:hover,
+{
     background-color: white;
 }
+
+
 .items-table th {
     border-bottom: 1px solid #E1E1E1;
     padding: 1.5%;
