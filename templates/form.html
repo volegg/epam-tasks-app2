@@ -12,14 +12,16 @@
 <body>
   <div class="container">
     <h4>Add Item</h4>
-    <form ng-controller="FormController as form" novalidate>
+    <form ng-controller="FormController as form" name="ajaxForm" novalidate>
       <label ng-repeat="item in form.items">
         {{item.name}}
-        <input type="text" name="{{item.type}}" value="{{item.value}}" required/>
+        <input type="text" name="{{item.type}}" placeholder="{{item.placeholder}}" ng-model="formvalidate" formvalidate required/>
+        <span ng-show="ajaxForm.{{item.type}}.$error.formvalidate" class="error-bottom">{{item.error}}</span>
       </label>
+      <span class="error-form"></span>
       <button id="ajaxButton" class="disabled" type="submit">Add</button>
     </form>
-    <table ng-controller="TableController as table" id="ajaxTable" ng-hide="true" ng-show="!!table.rows.length">
+    <table ng-controller="TableController as table" id="ajaxTable" ng-hide="true" ng-show="!!table.rows.length" ng-init="table.getData()">
       <thead>
         <tr>
           <th ng-repeat="header in table.headers">
@@ -28,15 +30,18 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="(key, value) in table.rows">
-          <td>
-            {{key + 1}}
+        <tr ng-repeat="(pKey, pValue) in table.rows track by pKey">
+          <td ng-repeat="(key, value) in pValue" ng-if="pKey === $index">
+            {{$index + 1}}
           </td>
-          <td ng-repeat="(key, value) in value" ng-if="key !== 'id'">
+          <td ng-repeat="(key, value) in pValue" ng-if="key !== 'id' && key !== 'phone'">
             {{value}}
           </td>
-          <td ng-repeat="(key, value) in value" ng-if="key === 'id'">
-            <a href="#" ng-click="table.deleteItem(value);" id="{{value}}">Remove</a>
+          <td ng-repeat="(key, value) in pValue" ng-if="key === 'phone'">
+            {{'+' + value}}
+          </td>
+          <td ng-repeat="(key, value) in pValue" ng-if="key === 'id'">
+            <a href="#{{value}}" ng-click="table.deleteItem(value, pKey)">Remove</a>
           </td>
         </tr>
       </tbody>
