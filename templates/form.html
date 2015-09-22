@@ -8,22 +8,23 @@
     <script language="JavaScript" src="/front/bootstrap.js"></script>
     <link rel="stylesheet" href="front/bootstrap.css">
     <script src="https://code.angularjs.org/1.2.14/angular.js"></script>
-    <script language="JavaScript" src="/front/form.js"></script>
+    <script language="JavaScript" src="/front/staffManagementApp.js"></script>
+    <script language="JavaScript" src="/front/itemsCtrl.js"></script>
     <link rel="stylesheet" href="front/form.css">
 
 </head>
-<body ng-controller="itemsCtrl">
+<body ng-controller="itemsCtrl as itemsCtrl">
     <div class="container form ">
-    <form role="form" name="addItem"  class="items-form col-xs-12" ng-submit="addItem.$valid && addNewItem(newItem)" novalidate>
+    <form role="form" name="addItem"  class="items-form col-xs-12" ng-submit="addItem.$valid && itemsCtrl.addNewItem(newItem)" novalidate>
         <fieldset>
             <legend>Add item:</legend>
             <div class="form-group col-xs-12 col-xs-offset-0.5">
                 <label for="item-name"  id="name-label">Name:</label>
-                <input class="form-control" id="item-name" type="text" name="name" ng-model="newItem.name"/>
+                <input class="form-control" id="item-name" type="text" name="name" ng-model="itemsCtrl.newItem.name"/>
             </div>
             <div class="form-group col-xs-12 col-xs-offset-0.5">
                 <label for="item-email">Email:</label>
-                <input class="form-control" id="item-email" type="email" required name="email" placeholder="your@email.com" ng-model="newItem.email" />
+                <input class="form-control" id="item-email" type="email" required name="email" placeholder="your@email.com" ng-model="itemsCtrl.newItem.email" />
                 <span class="error-message" ng-show="addItem.email.$dirty && addItem.email.$invalid">
                     <span ng-show="addItem.email.$error.required">Email is required.</span>
                     <span ng-show="addItem.email.$error.email">Invalid email address.</span>
@@ -31,7 +32,7 @@
             </div>
             <div class="form-group col-xs-12 col-xs-offset-0.5">
                 <label for="item-phone" >Phone:</label>
-                <input class="form-control" id="item-phone" type="text" required ng-pattern="/(^\+375\d{9}$)|(^8017\d{7}$)/" name="phone" placeholder="+375ZZXXXYYYY" ng-model="newItem.phone"/>
+                <input class="form-control" id="item-phone" type="text" required ng-pattern="/(^\+375\d{9}$)|(^8017\d{7}$)/" name="phone" placeholder="+375ZZXXXYYYY" ng-model="itemsCtrl.newItem.phone"/>
                 <span class="error-message" ng-show="addItem.phone.$dirty && addItem.phone.$invalid">
                     <span ng-show="addItem.phone.$error.required">Phone is required.</span>
                     <span ng-show="!addItem.phone.$error.required && addItem.phone.$invalid">Invalid phone format.</span>
@@ -45,17 +46,17 @@
     </form>
     </div>
     <div class="container table">
-        <table class="items-table col-xs-12" ng-show="!!items.length">
+        <table class="items-table col-xs-12" ng-show="!!itemsCtrl.items.length">
             <caption>TABLE</caption>
             <tr class="header">
                 <th>#</th>
-                <th ng-repeat="(key,value) in items[0]" ng-hide="key=='id'">{{ key }} </th>
+                <th ng-repeat="(key,value) in itemsCtrl.items[0]" ng-hide="key=='id'">{{ key }} </th>
                 <th></th>
             </tr>
-            <tr ng-repeat="item in items track by $index" ng-show="!!item" >
+            <tr ng-repeat="item in itemsCtrl.items track by $index" ng-show="!!item" >
                 <td>{{$index + 1}}</td>
                 <td ng-repeat="(key,value) in item" ng-hide="key=='id'">{{ value }} </td>
-                <td ><a class="item-delete" href="" ng-click="deleteItem(item.id);">Remove</a></td>
+                <td ><a class="item-delete" href="" ng-click="itemsCtrl.deleteItem(item.id);">Remove</a></td>
             </tr>
         </table>
 
