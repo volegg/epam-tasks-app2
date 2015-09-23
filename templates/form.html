@@ -22,12 +22,16 @@
         <button  type="submit">Submit</button>
     </form>
     <br>
-    <input type="button" id="c_table" value="Create Table">
-    <input type="button" id="c_items" value="Get Items">
+    <input type="button" id="c_table" value="Create Table"/>
+    <input type="button" id="c_items" value="Get Items"/>
     <div id="listItems"></div>
+
+    
 <script type="text/javascript">
     document.getElementById("c_table").addEventListener('click', createTable, false);
     document.getElementById("c_items").addEventListener('click', getItems, false);
+    
+
     getItems()
 
     function getItems(){
@@ -41,23 +45,44 @@
             } else {
                 var items = JSON.parse(this.responseText);
                 if (!!items) {
+                    //alert(this.responseText);
                     refreshItems(items);
                 }
             }
         };
         rqst.send();
     }
+
+    function addItemToTable(item, table) {
+        var row = document.createElement('tr');
+        for(key in item) {
+            if(item.hasOwnProperty(key) && key != 'id')
+                row.appendChild(document.createElement('td')).innerText = item[key];
+        }
+        
+        table.appendChild(row);
+    }
     function refreshItems(items){
         var t_div = document.getElementById("listItems");
-        var row = document.createElement("tr");
-        var cell = document.createElement("td");
-        cell.innerText = "Heheader";
-        row.appendChild(cell);
-        for (var i = 0; i < items.length; i++) {
-            var i_cell = document.createElement("td");
-            i_cell.innerText = items[1].
-            row.appendChild(i_cell);
-        };
+        var table = document.createElement("table");
+        var h_row = document.createElement("tr");
+        for(key in items[0]) {
+            if(items[0].hasOwnProperty(key) && key != 'id')
+                h_row.appendChild(document.createElement('td')).innerText = key;
+        }
+        table.appendChild(h_row);      
+        t_div.appendChild(table);
+        for (var i=0; i<items.length; i++) {
+            var h_row = document.createElement('tr');
+            for(key in items[i]) {
+                if(items[i].hasOwnProperty(key) && key != 'id')
+                    h_row.appendChild(document.createElement('td')).innerText = items[i][key];
+            }
+            table.appendChild(h_row);
+            //addItemToTable(items[i], table)
+        }
+        t_div.appendChild(table);
+
     }
 
     function alertGet(){
