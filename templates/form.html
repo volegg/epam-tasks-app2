@@ -21,14 +21,71 @@
         </label>
         <button  type="submit">Submit</button>
     </form>
+    <br>
+    <input type="button" id="c_table" value="Create Table">
+    <input type="button" id="c_items" value="Get Items">
+    <div id="listItems"></div>
 <script type="text/javascript">
+    document.getElementById("c_table").addEventListener('click', createTable, false);
+    document.getElementById("c_items").addEventListener('click', getItems, false);
+    getItems()
+
+    function getItems(){
+        var rqst = new XMLHttpRequest();
+        rqst.open("GET", "/items");
+        rqst.onreadystatechange = function(){
+            if (this.readyState != 4)
+                return;
+            if (this.status != 200) {
+                return;
+            } else {
+                var items = JSON.parse(this.responseText);
+                if (!!items) {
+                    refreshItems(items);
+                }
+            }
+        };
+        rqst.send();
+    }
+    function refreshItems(items){
+        var t_div = document.getElementById("listItems");
+        var row = document.createElement("tr");
+        var cell = document.createElement("td");
+        cell.innerText = "Heheader";
+        row.appendChild(cell);
+        for (var i = 0; i < items.length; i++) {
+            var i_cell = document.createElement("td");
+            i_cell.innerText = items[1].
+            row.appendChild(i_cell);
+        };
+    }
+
+    function alertGet(){
+        alert(this.responsetext);
+
+    }
+
+    function createTable(){
+        var t_div = document.getElementById("listItems");
+        var row = document.createElement("tr");
+        var cell = document.createElement("td");
+        cell.innerText = "blah blah";
+        row.appendChild(cell);
+        for (var i = 0; i <= 10; i++) {
+            var i_cell = document.createElement("td");
+            i_cell.innerText = i+" cell";
+            row.appendChild(i_cell);
+        };
+
+        t_div.appendChild(row);
+    }
+
     var form = document.getElementById('itemForm');
 
     form.onsubmit = function(){
         onFormSubmit();
         //clearForm();
     }
-
     function onFormSubmit(event){
         var rqst = new XMLHttpRequest();
         rqst.open("POST", "/items");
