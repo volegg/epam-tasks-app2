@@ -15,7 +15,7 @@
 </head>
 <body ng-controller="itemsCtrl as itemsCtrl">
     <div class="container form ">
-    <form role="form" name="addItem"  class="items-form col-xs-12" ng-submit="addItem.$valid && itemsCtrl.addNewItem(newItem)" novalidate>
+    <form role="form" name="addItem"  class="items-form col-xs-12" ng-submit="addItem.$valid && itemsCtrl.addNewItem(itemsCtrl.newItem)" novalidate>
         <fieldset>
             <legend>Add item:</legend>
             <div class="form-group col-xs-12 col-xs-offset-0.5">

@@ -37,7 +37,7 @@
             $http.post('/items', postData).success(function (data) {
                 vm.items.push(data);
                 emptyNewItem();
-                vm.addItem.$setPristine();
+                $scope.addItem.$setPristine();
             })
         }
 
