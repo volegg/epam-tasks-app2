@@ -6,7 +6,7 @@
     <title>Form</title>
 </head>
 <body>
-    <form method="post" action="/items">
+    <form id="itemForm">
         <label>
             Name:
             <input type="text" name="name" />
@@ -19,7 +19,47 @@
             Phone:
             <input type="text" name="phone" />
         </label>
-        <button type="submit">Submit</button>
+        <button  type="submit">Submit</button>
     </form>
+<script type="text/javascript">
+    var form = document.getElementById('itemForm');
+
+    form.onsubmit = function(){
+        onFormSubmit();
+        //clearForm();
+    }
+
+    function onFormSubmit(event){
+        var rqst = new XMLHttpRequest();
+        rqst.open("POST", "/items");
+        rqst.send(getFormData(form));
+        rqst.onreadystatechange = function () {
+            if ( 4 != rqst.readyState ) {
+                return;
+            }
+            if ( 200 != rqst.status ) {
+                return;
+            }
+            clearForm();
+            }
+        }
+    function getFormData(form){
+        var output = "";
+        for (var i=0; i<form.length; i++){
+            if (form[i].type === 'text'){
+                output += (i==0?'':'&') + form[i].name + '=' + encodeURIComponent(form[i].value);
+            }
+        }
+        return output;
+    }
+    function clearForm(){
+        for (var i=0; i<form.length; i++){
+            if (form[i].type === 'text'){
+                form[i].value = '';
+            }
+        }
+    }
+</script>
+
 </body>
 </html>
