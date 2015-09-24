@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>To Do</title>
+    <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+    
+</head>
+<body>
+	<table>
+		<tr>
+			<td>
+				<input type="text" id="argument"/>
+				<input type="button" id="fl" value="!"/>
+				<div id="result">results:<br></div>
+			</td>
+			<td>
+				<input type="text" id="palindrome"/>
+				<input type="button" id="pm" value="?"/>
+			</td>
+		</tr>
+	</table>
+
+	<script type="text/javascript">
+		document.getElementById("fl").addEventListener("click", calc_factorial);
+		
+		function factorial(arg){
+			var n = parseInt(arg);
+			if (n==0) {
+				return 1;
+			}
+			else{
+				return n*factorial(n-1);
+			}
+		}
+		function calc_factorial(){
+			var arg = document.getElementById("argument").value;
+			var res = factorial(arg);
+
+			var p = document.createTextNode(arg+"! ="+res);
+			var res_div = document.getElementById("result");
+			res_div.appendChild(p);
+			res_div.appendChild(document.createElement("br"));
+			document.getElementById("argument").value = '';
+		}
+
+		document.getElementById("pm").addEventListener("click", checkPalindrome);
+		
+		function checkPalindrome(){
+			var word = document.getElementById("palindrome").value;
+			alert(isPalindrome(word));
+		}
+
+		function isPalindrome(word){
+			
+			var i=0
+			var j = word.length-1;
+			while(j>i && word[i]==word[j]){
+				i++;
+				j--;
+				if (j<=i) return "Palindrome Found";
+			}
+			return "Not a palindrome";
+		}
+	</script>
+</body>
+</html>
