@@ -8,12 +8,12 @@
 <body>
 	<table>
 		<tr>
-			<td>
+			<td valign="top">
 				<input type="text" id="argument"/>
 				<input type="button" id="fl" value="!"/>
 				<div id="result">results:<br></div>
 			</td>
-			<td>
+			<td valign="top">
 				<input type="text" id="palindrome"/>
 				<input type="button" id="pm" value="?"/>
 			</td>
@@ -25,12 +25,9 @@
 		
 		function factorial(arg){
 			var n = parseInt(arg);
-			if (n==0) {
-				return 1;
-			}
-			else{
-				return n*factorial(n-1);
-			}
+			if (n<0 || n!=arg) {return NaN;};
+			return (n==0)? 1 : n*factorial(n-1);
+			
 		}
 		function calc_factorial(){
 			var arg = document.getElementById("argument").value;
