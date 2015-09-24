@@ -61,6 +61,7 @@
     function refreshItems(items){
         var t_div = document.getElementById("listItems");
         var table = document.createElement("table");
+        table.id = "itemsTable";
         var h_row = document.createElement("tr");
         for(key in items[0]) {
             if(items[0].hasOwnProperty(key) && key != 'id')
@@ -79,27 +80,16 @@
         t_div.appendChild(table);
 
     }
-
-    function alertGet(){
-        alert(this.responsetext);
-
+    function refreshPostedItem(item){
+        var table = document.getElementById("itemsTable");
+        var addedRow = document.createElement("tr");
+        item = JSON.parse(item);
+        for(key in item) {
+            if(item.hasOwnProperty(key) && key != 'id')
+                addedRow.appendChild(document.createElement('td')).innerText = item[key];
+        }
+        table.appendChild(addedRow);
     }
-
-    function createTable(){
-        var t_div = document.getElementById("listItems");
-        var row = document.createElement("tr");
-        var cell = document.createElement("td");
-        cell.innerText = "blah blah";
-        row.appendChild(cell);
-        for (var i = 0; i <= 10; i++) {
-            var i_cell = document.createElement("td");
-            i_cell.innerText = i+" cell";
-            row.appendChild(i_cell);
-        };
-
-        t_div.appendChild(row);
-    }
-
 
     function onFormSubmit(event){
         var rqst = new XMLHttpRequest();
@@ -113,6 +103,7 @@
                 return;
             }
             clearForm();
+            refreshPostedItem(rqst.response);
             }
         }
     function getFormData(form){
