@@ -19,20 +19,24 @@
             Phone:
             <input type="text" name="phone" />
         </label>
-        <button  type="submit">Submit</button>
+        <!--button  type="submit">Submit</button-->
     </form>
     <br>
+    <input type="button" id="addItem" value="addItem"/>
+<!--
     <input type="button" id="c_table" value="Create Table"/>
     <input type="button" id="c_items" value="Get Items"/>
+-->
     <div id="listItems"></div>
 
     
 <script type="text/javascript">
-    document.getElementById("c_table").addEventListener('click', createTable, false);
-    document.getElementById("c_items").addEventListener('click', getItems, false);
-    
+    //document.getElementById("c_table").addEventListener('click', createTable, false);
+    //document.getElementById("c_items").addEventListener('click', getItems, false);
+    var form = document.getElementById('itemForm');
+    document.getElementById("addItem").addEventListener("click", onFormSubmit);
 
-    getItems()
+    getItems();
 
     function getItems(){
         var rqst = new XMLHttpRequest();
@@ -53,16 +57,7 @@
         rqst.send();
     }
 
-    function addItemToTable(item, table) {
-        var row = document.createElement('tr');
-        for(key in item) {
-            if(item.hasOwnProperty(key) && key != 'id')
-                row.appendChild(document.createElement('td')).innerText = item[key];
-            
-        }
-        
-        table.appendChild(row);
-    }
+
     function refreshItems(items){
         var t_div = document.getElementById("listItems");
         var table = document.createElement("table");
@@ -80,7 +75,6 @@
                     h_row.appendChild(document.createElement('td')).innerText = items[i][key];
             }
             table.appendChild(h_row);
-            //addItemToTable(items[i], table)
         }
         t_div.appendChild(table);
 
@@ -106,12 +100,7 @@
         t_div.appendChild(row);
     }
 
-    var form = document.getElementById('itemForm');
 
-    form.onsubmit = function(){
-        onFormSubmit();
-        //clearForm();
-    }
     function onFormSubmit(event){
         var rqst = new XMLHttpRequest();
         rqst.open("POST", "/items");
@@ -130,6 +119,7 @@
         var output = "";
         for (var i=0; i<form.length; i++){
             if (form[i].type === 'text'){
+                //alert(form[i].value)
                 output += (i==0?'':'&') + form[i].name + '=' + encodeURIComponent(form[i].value);
             }
         }
