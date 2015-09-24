@@ -3,16 +3,22 @@
  */
 (function() {
     angular.module('staffManagementApp')
-        .controller('itemsCtrl', implementItemsCtrl);
+        .controller('itemsCtrl', createItemsCtrl);
 
-    function implementItemsCtrl($scope, $http) {
+    function createItemsCtrl($scope, $http, itemsService) {
         var vm = this;
         vm.items = [];
-        $http.get('/items').success(function (data) {
+        vm.newItem = {};
+
+        vm.addNewItem = addNewItem;
+        vm.deleteItem = deleteItem;
+
+        emptyNewItem();
+
+        itemsService.getItems().success(function (data) {
             vm.items = data;
         });
 
-        vm.newItem = {};
 
         function emptyNewItem() {
             vm.newItem.name = '';
@@ -20,35 +26,26 @@
             vm.newItem.phone = '';
         }
 
+        function addNewItem(item) {
+            itemsService.addNewItem(item).success(onGetItemsSuccess);
 
-        emptyNewItem();
-
-        vm.addNewItem = function (item) {
-            var postData = "";
-            var conjunction = "";
-
-            for (field in item) {
-                postData += conjunction + field + '=' + encodeURIComponent(item[field]);
-                if (conjunction === '')
-                    conjunction = "&";
-
-            }
-
-            $http.post('/items', postData).success(function (data) {
+            function onGetItemsSuccess(data) {
                 vm.items.push(data);
                 emptyNewItem();
                 $scope.addItem.$setPristine();
-            })
+            }
         }
 
-        vm.deleteItem = function (id) {
-            $http.delete('/items?id=' + id).success(function (data) {
+        function deleteItem(id) {
+            itemsService.deleteItem(id).success(onDelete);
+
+            function onDelete(data) {
                 for (index in vm.items) {
                     if (vm.items.hasOwnProperty(index) && vm.items[index].id == id) {
                         delete vm.items[index];
                     }
                 }
-            });
+            }
         }
 
     }
