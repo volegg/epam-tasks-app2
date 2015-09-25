@@ -9,13 +9,13 @@
         var vm = this;
         vm.items = [];
         vm.newItem = {};
-
         vm.addNewItem = addNewItem;
         vm.deleteItem = deleteItem;
 
         emptyNewItem();
 
-        itemsService.getItems().success(function (data) {
+        //console.log(itemsService.getItems());
+        itemsService.getItems().then(function (data) {
             vm.items = data;
         });
 
@@ -27,7 +27,7 @@
         }
 
         function addNewItem(item) {
-            itemsService.addNewItem(item).success(onGetItemsSuccess);
+            itemsService.addNewItem(item).then(onGetItemsSuccess);
 
             function onGetItemsSuccess(data) {
                 vm.items.push(data);
@@ -37,7 +37,7 @@
         }
 
         function deleteItem(id) {
-            itemsService.deleteItem(id).success(onDelete);
+            itemsService.deleteItem(id).then(onDelete);
 
             function onDelete(data) {
                 for (index in vm.items) {

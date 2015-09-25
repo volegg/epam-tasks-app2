@@ -11,7 +11,9 @@
         this.getItems = getItems;
 
         function getItems(items) {
-            return $http.get('/items');
+            return $http.get('/items').then(function(data){
+                return data.data;
+            });
         }
 
         function addNewItem(item) {
@@ -25,11 +27,15 @@
 
             }
 
-            return $http.post('/items', postData);
+            return $http.post('/items', postData).then(function(data){
+                return data.data;
+            });
         }
 
         function deleteItem(id) {
-            return $http.delete('/items?id=' + id);
+            return $http.delete('/items?id=' + id).then(function(data){
+                return data.data;
+            });
         }
 
     }
