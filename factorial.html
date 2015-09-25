@@ -1,0 +1,38 @@
+<html>
+<head>
+<title>
+Factorial function
+</title>
+</head>
+<body>
+<form id="form">
+Number:
+<input id= "num" type="text">
+<div id="result"></div>
+</form>
+<button id="count">Count</button>
+<script>
+count.addEventListener('click', h);
+var fact;
+function f(n)
+{
+	if(n==0)
+	{
+		return 1;
+	}
+	else
+	{
+		return n*f(n-1);
+	}
+}
+function h()
+{
+	var num = document.getElementById("num").value;
+	var count = document.getElementById("count");
+	var h =  document.createElement("h3");
+	h.innerText = f(num);
+    document.getElementById("result").appendChild(h);
+}
+</script>
+</body>
+</html>

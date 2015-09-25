@@ -1,0 +1,48 @@
+<html>
+<head>
+<title>
+Unique function
+</title>
+</head>
+<body>
+<form id="form">
+String:
+<input id= "str" type="text">
+<div id="result"></div>
+</form>
+<button id="count">Find</button>
+<script>
+count.addEventListener('click', h);
+
+function finds(str)
+{
+
+	var unique="";
+	while(str.length > 0)
+	{
+		var ww = str.length;
+		var rt = new RegExp(str.substr(0,1), "g");
+		var temp = str.match(rt);
+		if(temp.length >= 1)
+		{
+			unique = unique +" "+ temp[0];
+		}
+		str = str.replace(rt, "");
+ 
+	}
+	return unique;
+}
+function h()
+{
+	document.getElementById("result").innerHTML = "";
+	var str = document.getElementById("str").value;
+	var count = document.getElementById("count");
+	var h =  document.createElement("h3");
+	var new_str ="";
+	new_str =  finds(str);
+	h.innerText = new_str;
+    document.getElementById("result").appendChild(h);
+}
+</script>
+</body>
+</html>

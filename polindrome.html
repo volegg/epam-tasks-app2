@@ -1,0 +1,47 @@
+<html>
+<head>
+<title>
+Polindrome function
+</title>
+</head>
+<body>
+<form id="form">
+Number:
+<input id= "str" type="text">
+<div id="result"></div>
+</form>
+<button id="count">Find</button>
+<script>
+count.addEventListener('click', h);
+
+function poli(str)
+{
+	var temp="";
+	for(var i = str.length-1; i >= 0; i--)
+	{
+		temp = temp + str[i];
+ 
+	}
+	return temp;
+}
+function h()
+{
+	document.getElementById("result").innerHTML = "";
+	var str = document.getElementById("str").value;
+	var count = document.getElementById("count");
+	var h =  document.createElement("h3");
+	var new_str ="";
+	new_str =  poli(str);
+	if(str == new_str)
+	{
+		h.innerText = "Polindrome!";
+	}	
+	else
+	{
+		h.innerText = "Not Polindrome!";
+	}
+    document.getElementById("result").appendChild(h);
+}
+</script>
+</body>
+</html>
