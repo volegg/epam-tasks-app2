@@ -1,25 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
-    <title>Form</title>
-</head>
 <body>
-    <form method="post" action="/items">
+    <form id="sendform">
         <label>
             Name:
-            <input type="text" name="name" />
+            <input id="name" type="text" name="name" />
         </label>
         <label>
             Email:
-            <input type="text" name="email" />
+            <input id="email" type="text" name="email" />
         </label>
         <label>
             Phone:
-            <input type="text" name="phone" />
+            <input id="phone" type="text" name="phone" />
         </label>
-        <button type="submit">Submit</button>
     </form>
+         <button id="post" onclick="postdata();">Submit</button>
+        <button id="get"  onclick="getdata();">Get</button>
+        <button id="clear"  onclick="clearform();">Clear</button>
+    <br><br>
+    <div id="ads"></div>
+    <script>
+
+ function postdata()
+ {
+    var xhr = new XMLHttpRequest();
+
+    var email = document.getElementById("email").value;
+    var name = document.getElementById("name").value;
+    var phone = document.getElementById("phone").value;
+    
+    
+    var postData = 'name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&phone=' + encodeURIComponent(phone);
+    xhr.open('POST', '/items');
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    
+    xhr.onreadystatechange = function()
+    {
+        if(xhr.readyState != 4) return;
+        if(xhr.readyState == 4 && xhr.status == 200)
+        {
+            clearform();
+        }
+    }
+    xhr.send(postData);
+
+
+}
+function getdata()
+ {
+ 
+     var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://localhost:8888/items', true);
+   xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function()
+    {
+        if(xhr.readyState==4 && xhr.status==200)
+        {
+            createtable(xhr.responseText);    
+        }
+    }
+    xhr.send(null);
+}
+function createtable(data)
+{
+    var h = document.createElement("h3");
+    var data_array = JSON.parse(data);
+for(var i =0; i < data_array.length;i++)
+{
+    alert((i+1) + " - " +data_array[i].name);
+}
+    document.getElementById("ads").appendChild(h);
+}
+
+
+ function clearform()
+ {
+    document.getElementById("email").value = null;
+    document.getElementById("name").value = null;
+    document.getElementById("phone").value = null;
+ }
+    </script>
 </body>
 </html>
