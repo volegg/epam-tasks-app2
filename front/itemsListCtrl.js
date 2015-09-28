@@ -3,37 +3,21 @@
  */
 (function() {
     angular.module('staffManagementApp')
-        .controller('itemsCtrl', createItemsCtrl);
+        .controller('itemsListCtrl', createItemsList);
 
-    function createItemsCtrl($scope, $http, itemsService) {
+    function createItemsList($scope, $rootScope,itemsService) {
         var vm = this;
         vm.items = [];
-        vm.newItem = {};
-        vm.addNewItem = addNewItem;
         vm.deleteItem = deleteItem;
 
-        emptyNewItem();
-
-        //console.log(itemsService.getItems());
         itemsService.getItems().then(function (data) {
             vm.items = data;
         });
 
+        $rootScope.$on('AddNewItem', addNewItem);
 
-        function emptyNewItem() {
-            vm.newItem.name = '';
-            vm.newItem.email = '';
-            vm.newItem.phone = '';
-        }
-
-        function addNewItem(item) {
-            itemsService.addNewItem(item).then(onGetItemsSuccess);
-
-            function onGetItemsSuccess(data) {
-                vm.items.push(data);
-                emptyNewItem();
-                $scope.addItem.$setPristine();
-            }
+        function addNewItem(event, item) {
+            vm.items.push(item);
         }
 
         function deleteItem(id) {
