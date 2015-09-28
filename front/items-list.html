@@ -1,0 +1,16 @@
+<div class="container table">
+    <table class="items-table col-xs-12" ng-show="!!itemsCtrl.items.length">
+        <caption>TABLE</caption>
+        <tr class="header">
+            <th>#</th>
+            <th ng-repeat="(key,value) in itemsCtrl.items[0]" ng-hide="key=='id'">{{ key }} </th>
+            <th></th>
+        </tr>
+        <tr ng-repeat="item in itemsCtrl.items track by $index" ng-show="!!item" >
+            <td>{{$index + 1}}</td>
+            <td ng-repeat="(key,value) in item" ng-hide="key=='id'">{{ value }} </td>
+            <td ><a class="item-delete" href="" ng-click="itemsCtrl.deleteItem(item.id);">Remove</a></td>
+        </tr>
+    </table>
+
+</div>

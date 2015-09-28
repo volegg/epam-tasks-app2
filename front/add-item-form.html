@@ -1,0 +1,31 @@
+<div class="container form ">
+    <form role="form" name="addItem"  class="items-form col-xs-12" ng-submit="addItem.$valid && itemsCtrl.addNewItem(itemsCtrl.newItem)" novalidate>
+        <fieldset>
+            <legend>Add item:</legend>
+            <div class="form-group col-xs-12 col-xs-offset-0.5">
+                <label for="item-name"  id="name-label">Name:</label>
+                <input class="form-control" id="item-name" type="text" name="name" ng-model="itemsCtrl.newItem.name"/>
+            </div>
+            <div class="form-group col-xs-12 col-xs-offset-0.5">
+                <label for="item-email">Email:</label>
+                <input class="form-control" id="item-email" type="email" required name="email" placeholder="your@email.com" ng-model="itemsCtrl.newItem.email" />
+                <span class="error-message" ng-show="addItem.email.$dirty && addItem.email.$invalid">
+                    <span ng-show="addItem.email.$error.required">Email is required.</span>
+                    <span ng-show="addItem.email.$error.email">Invalid email address.</span>
+                </span>
+            </div>
+            <div class="form-group col-xs-12 col-xs-offset-0.5">
+                <label for="item-phone" >Phone:</label>
+                <input class="form-control" id="item-phone" type="text" required ng-pattern="/(^\+375\d{9}$)|(^8017\d{7}$)/" name="phone" placeholder="+375ZZXXXYYYY" ng-model="itemsCtrl.newItem.phone"/>
+                <span class="error-message" ng-show="addItem.phone.$dirty && addItem.phone.$invalid">
+                    <span ng-show="addItem.phone.$error.required">Phone is required.</span>
+                    <span ng-show="!addItem.phone.$error.required && addItem.phone.$invalid">Invalid phone format.</span>
+                </span>
+            </div>
+
+            <button class="item-add-btn col-xs-2" name="btnSubmit"  type="submit">Add</button>
+
+            <div class="clear-fix"></div>
+        </fieldset>
+    </form>
+</div>
