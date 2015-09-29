@@ -3,12 +3,15 @@
  */
 (function() {
     angular.module('staffManagementApp')
-        .directive('addItemForm', createAddItemForm);
+        .directive('addItemForm', createAddItemFormDirective);
 
-    function createAddItemForm() {
+    function createAddItemFormDirective() {
         return {
             restrict: 'E',
-            templateUrl: 'front/add-item-form.html'
+            templateUrl: 'front/add-item-form.html',
+            controller: 'addItemFormCtrl',
+            controllerAs: 'itemsCtrl',
+            bindToController: true,
         };
     }
 
