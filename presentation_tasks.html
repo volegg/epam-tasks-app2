@@ -73,8 +73,6 @@
 			var u_s = document.getElementById("u_string").value;
 			var u_res = document.getElementById("u_res");
 			u_res.appendChild(document.createTextNode("Unique char are:"));
-			//u_res.appendChild(document.createElement("br"));
-			//u_res.appendChild(document.createTextNode(u_s));
 			fillHash(u_s);
 			for (var key in hash){
 				if(hash.hasOwnProperty(key)){
@@ -84,8 +82,10 @@
 			}
 		}
 		function fillHash(string){
+			
 			for (var i = 0; i < string.length; i++) {
 				if(!hash.hasOwnProperty(string[i])){
+					
 					hash[string[i]] = '`';
 				}
 			};

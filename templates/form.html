@@ -56,7 +56,31 @@
         };
         rqst.send();
     }
+    function deleteItem(d_itemId){
+    var drqst = new XMLHttpRequest();
+    drqst.open("DELETE", "/items?id="+d_itemId);
+    drqst.onreadystatechange = function () {
+        if ( 4 != drqst.readyState ) {
+            return;
+        }
+        if ( 200 != drqst.status ) {
+            return;
+        }
+        //clearForm();
+        deleteItem_table(drqst.response);
+        }
+    drqst.send('');
 
+    }
+    function deleteItem_table(d_t_item){
+        var t_div = document.getElementById("listItems");
+        var n_table = document.createElement("table");
+        var table = document.getElementById("itemsTable");
+        //for(id in table.)
+        t_div.innerHTML = "";
+        
+
+    }
 
     function refreshItems(items){
         var t_div = document.getElementById("listItems");
@@ -70,11 +94,20 @@
         table.appendChild(h_row);      
         t_div.appendChild(table);
         for (var i=0; i<items.length; i++) {
-            var h_row = document.createElement('tr');
+            h_row = document.createElement('tr');
             for(key in items[i]) {
                 if(items[i].hasOwnProperty(key) && key != 'id')
                     h_row.appendChild(document.createElement('td')).innerText = items[i][key];
             }
+            var delLink = document.createElement("a");
+            delLink.setAttribute('href','javascript:void(0)');
+            delLink.setAttribute('class','delLink');
+            delLink.setAttribute('onclick',"deleteItem('"+items[i]['id']+"')");
+            delLink.innerText = 'Delete';
+            var delCell = document.createElement('td');
+            delCell.appendChild(delLink);
+            h_row.setAttribute("id",items[i]['id']);
+            h_row.appendChild(delCell);
             table.appendChild(h_row);
         }
         t_div.appendChild(table);
@@ -88,6 +121,15 @@
             if(item.hasOwnProperty(key) && key != 'id')
                 addedRow.appendChild(document.createElement('td')).innerText = item[key];
         }
+        var delLink = document.createElement("a");
+        delLink.setAttribute('href','javascript:void(0)');
+        delLink.setAttribute('class','delLink');
+        delLink.setAttribute('onclick',"deleteItem('"+item['id']+"')");
+        delLink.innerText = 'Delete';
+        var delCell = document.createElement('td');
+        delCell.appendChild(delLink);
+        addedRow.setAttribute("id",item['id']);
+        addedRow.appendChild(delCell);
         table.appendChild(addedRow);
     }
 
