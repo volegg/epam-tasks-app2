@@ -11,7 +11,6 @@
             templateUrl: 'front/add-item-form.html',
             controller: 'addItemFormCtrl',
             controllerAs: 'itemsCtrl',
-            bindToController: true,
             scope: {},
         };
     }

@@ -10,11 +10,15 @@
         vm.items = [];
         vm.deleteItem = deleteItem;
 
-        itemsService.getItems().then(function (data) {
-            vm.items = data;
-        });
+        activate();
 
-        $rootScope.$on('AddNewItem', addNewItem);
+        function activate() {
+            itemsService.getItems().then(function (data) {
+                vm.items = data;
+            });
+
+            $rootScope.$on('AddNewItem', addNewItem);
+        }
 
         function addNewItem(event, item) {
             vm.items.push(item);

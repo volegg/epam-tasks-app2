@@ -11,7 +11,6 @@
             templateUrl: 'front/items-list.html',
             controller: 'itemsListCtrl',
             controllerAs: 'itemsCtrl',
-            bindToController: true,
             scope: {},
         };
     }
