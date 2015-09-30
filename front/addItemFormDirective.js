@@ -12,6 +12,7 @@
             controller: 'addItemFormCtrl',
             controllerAs: 'itemsCtrl',
             bindToController: true,
+            scope: {},
         };
     }
 

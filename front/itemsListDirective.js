@@ -12,6 +12,7 @@
             controller: 'itemsListCtrl',
             controllerAs: 'itemsCtrl',
             bindToController: true,
+            scope: {},
         };
     }
 
