@@ -5,17 +5,19 @@
     angular.module('staffManagementApp')
         .controller('itemsListCtrl', createItemsList);
 
-    function createItemsList($scope, $rootScope,itemsService) {
+    createItemsList.$inject = ['$scope', '$rootScope', 'itemsService', 'itemsListData'];
+
+    function createItemsList($scope, $rootScope, itemsService, itemsListData) {
         var vm = this;
-        vm.items = [];
+        vm.items = itemsListData.data;
         vm.deleteItem = deleteItem;
 
         activate();
 
         function activate() {
-            itemsService.getItems().then(function (data) {
-                vm.items = data;
-            });
+           // itemsService.getItems().then(function (data) {
+           //     vm.items = data;
+           // });
 
             $rootScope.$on('AddNewItem', addNewItem);
         }
