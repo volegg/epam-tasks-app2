@@ -18,7 +18,8 @@ var Config = {
     controllers: {
         home: directories.controllers + '/home',
         form: directories.controllers + '/form',
-        items: directories.controllers + '/items'
+        items: directories.controllers + '/items',
+        file: directories.controllers + '/file'
     },
 
     getController: function(name) {

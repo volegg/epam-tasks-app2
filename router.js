@@ -12,6 +12,10 @@ exports.match = function(request, response, pathname, postData) {
     });
 
     if (!isRouteExists) {
-        config.getController('home').getAction(request, response)
+        if (pathname.length > 0) {
+            config.getController('file').getAction(request, response, pathname);
+        } else {
+            config.getController('home').getAction(request, response);
+        }
     }
 };
