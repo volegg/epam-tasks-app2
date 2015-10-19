@@ -16,7 +16,7 @@ exports.getAction = function (request, response) {
 };
 
 exports.postAction = function (request, response, pathname, postData) {
-    postData = qs.parse(postData);
+    postData = JSON.parse(postData);
 
     fs.readFile(config.database.path, function (err, data) {
         data = err || !data ? [] : JSON.parse(data.toString('utf8'));
