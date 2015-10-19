@@ -6,24 +6,39 @@
     <script src="/node_modules/angular/angular.min.js"></script>
     <script src="/src/app.js"></script>
     <title>Form</title>
+
+    <style>
+        td {
+            border-style: solid;
+        }
+    </style>
+
 </head>
 <body>
     <div ng-controller="itemController as itemCtrl">
         <form novalidate>
             <label>
                 Name:
-                <input type="text" name="name" ng-model="user.name" />
+                <input type="text" name="name" ng-model="item.name" />
             </label>
             <label>
                 Email:
-                <input type="text" name="email" ng-model="user.email" />
+                <input type="text" name="email" ng-model="item.email" />
             </label>
             <label>
                 Phone:
-                <input type="text" name="phone" ng-model="user.phone" />
+                <input type="text" name="phone" ng-model="item.phone" />
             </label>
-            <button type="submit" ng-click="itemCtrl.create(user)">Submit</button>
+            <button type="submit" ng-click="itemCtrl.create(item)">Submit</button>
         </form>
+        <table>
+            <tr ng-repeat="item in itemCtrl.items">
+                <td ng-bind="item.id"></td>
+                <td ng-bind="item.name"></td>
+                <td ng-bind="item.email"></td>
+                <td ng-bind="item.phone"></td>
+            </tr>
+        </table>
     </div>
 </body>
 </html>
