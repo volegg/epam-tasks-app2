@@ -19,18 +19,18 @@
         <form name="form" novalidate>
             <label>
                 Name:
-                <input type="text" name="name" ng-model="item.name" />
+                <input type="text" placeholder="Input name" name="name" ng-model="item.name" />
             </label>
             <label>
                 Email:
-                <input type="text" name="email" ng-model="item.email" ng-pattern="/^[a-zA-Z0-9\._%+-]+@[a-zA-Z0-9\.-]+\.[a-zA-Z]{2,}$/"/>
+                <input type="text" placeholder="Your email address" name="email" ng-model="item.email" ng-pattern="/^[a-zA-Z0-9\._%+-]+@[a-zA-Z0-9\.-]+\.[a-zA-Z]{2,}$/"/>
                 <span ng-show="form.$submitted || form.email.$touched">
                     <span ng-show="form.email.$error.pattern">This is not a valid email.</span>
                 </span>
             </label>
             <label>
                 Phone:
-                <input type="text" name="phone" ng-model="item.phone" ng-pattern="/^\+375[0-9]{9}$|^8017[0-9]{7}$/"/>
+                <input type="text" placeholder="+375ZZXXXYYYY" name="phone" ng-model="item.phone" ng-pattern="/^\+375[0-9]{9}$|^8017[0-9]{7}$/"/>
                 <span ng-show="form.$submitted || form.phone.$touched">
                     <span ng-show="form.phone.$error.pattern">This is not a valid phone.</span>
                 </span>
@@ -38,8 +38,8 @@
             <button type="submit" ng-click="form.$valid ? itemCtrl.create(item) : false">Submit</button>
         </form>
         <table>
-            <tr ng-repeat="item in itemCtrl.items">
-                <td ng-bind="item.id"></td>
+            <tr ng-repeat="(key, item) in itemCtrl.items">
+                <td ng-bind="key+1"></td>
                 <td ng-bind="item.name"></td>
                 <td ng-bind="item.email"></td>
                 <td ng-bind="item.phone"></td>
