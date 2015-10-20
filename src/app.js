@@ -2,14 +2,15 @@
     var itemApp,
         ItemController;
 
-    ItemController = function($http) {
+    ItemController = function($scope, $http) {
+        var resetForm;
         var self = this;
-
         this.items = [];
 
         this.create = function(item){
             $http.post('/items', item).success(function(data) {
                 self.items.push(data);
+                resetForm();
             });
         };
 
@@ -26,9 +27,14 @@
             });
         };
 
+        resetForm = function() {
+            $scope.form.$setPristine();
+            $scope.item = {name: '', email: '', phone: ''};
+        };
+
         this.get();
     };
 
     itemApp = angular.module('itemApp', [])
-        .controller('itemController', ['$http', ItemController]);
+        .controller('itemController', ['$scope', '$http', ItemController]);
 })();

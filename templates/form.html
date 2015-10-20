@@ -6,13 +6,6 @@
     <script src="/node_modules/angular/angular.min.js"></script>
     <script src="/src/app.js"></script>
     <title>Form</title>
-
-    <style>
-        td {
-            border-style: solid;
-        }
-    </style>
-
 </head>
 <body>
     <div ng-controller="itemController as itemCtrl">
@@ -35,7 +28,7 @@
                     <span ng-show="form.phone.$error.pattern">This is not a valid phone.</span>
                 </span>
             </label>
-            <button type="submit" ng-click="form.$valid ? itemCtrl.create(item) : false">Submit</button>
+            <button type="submit" ng-click="form.$valid ? itemCtrl.create(item, form) : false">Submit</button>
         </form>
         <table>
             <tr ng-repeat="(key, item) in itemCtrl.items">
