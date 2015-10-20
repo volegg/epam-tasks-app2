@@ -12,6 +12,6 @@ exports.match = function(request, response, pathname, postData) {
     });
 
     if (!isRouteExists) {
-        config.getController('home').getAction(request, response)
+        config.getController('default').getAction(request, response, pathname)
     }
 };

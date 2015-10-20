@@ -8,7 +8,6 @@ var projectDir = __dirname,
 
 var Config = {
     directories: directories,
-
     routes: directories.routes + '/routes',
 
     database: {
@@ -18,7 +17,9 @@ var Config = {
     controllers: {
         home: directories.controllers + '/home',
         form: directories.controllers + '/form',
-        items: directories.controllers + '/items'
+        items: directories.controllers + '/items',
+        index: directories.controllers + '/index',
+        default: directories.controllers + '/default'
     },
 
     getController: function(name) {
