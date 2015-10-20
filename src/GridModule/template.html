@@ -1,0 +1,14 @@
+<table ng-controller="GridController as gridCtrl">
+    <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>E-mail</th>
+        <th>Phone</th>
+    </tr>
+    <tr ng-repeat="item in gridCtrl.items">
+        <td><span ng-bind="item.id"></span></td>
+        <td><span ng-bind="item.name"></span></td>
+        <td><span ng-bind="item.email"></span></td>
+        <td><span ng-bind="item.phone"></span></td>
+    </tr>
+</table>
