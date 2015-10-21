@@ -3,11 +3,15 @@
     angular
         .module("GridModule")
         .controller("GridController", ["UserFactory", function(UserFactory) {
-            this.items = UserFactory.getUsers();
-            console.log(this.items);
-            //this.updateItems = function(){
-            //    this.items =  UserFactory.getUsers();
-            //};
+            var self = this;
+            this.items = [];
+
+            (function updateItems(){
+                var promise = UserFactory.getUsers();
+                promise.then(function(pass){
+                    self.items = pass.data;
+                })
+            })()
 
         }]);
 })(angular);

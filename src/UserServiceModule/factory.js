@@ -20,11 +20,7 @@
                 },
                 getUsers: function(){
                     var _route = "/items";
-                    $http.get(_route).success(
-                        function(response) {
-                            return response.data;
-                        }
-                    );
+                    return $http.get(_route);
 
                 },
                 deleteUser: function(user){
