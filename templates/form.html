@@ -1,83 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF8">
+    <link rel="shortcut icon" href="data:image/xicon;," type="image/xicon">
+    <title>Form</title>
+</head>
 <body>
-    <form id="sendform">
-        <label>
-            Name:
-            <input id="name" type="text" name="name" />
-        </label>
-        <label>
-            Email:
-            <input id="email" type="text" name="email" />
-        </label>
-        <label>
-            Phone:
-            <input id="phone" type="text" name="phone" />
-        </label>
-    </form>
-         <button id="post" onclick="postdata();">Submit</button>
-        <button id="get"  onclick="getdata();">Get</button>
-        <button id="clear"  onclick="clearform();">Clear</button>
+<style>
+   .form {
+    
+    border: 1px solid grey;
+    padding: 3px;
+    margin-bottom: 10px;
+   }
+   .list
+   {
+    
+    border-radius: 4px;
+    border: 1px solid grey;
+    padding: 3px;
+    margin-bottom: 10px;
+   }
+   .label
+   {
+    font-family: Verdana;
+    font-size: 12px;
+    color: #404040;
+   }
+   tr.border_bottom td
+   {
+    border-bottom:1pt solid black;
+    }
+  </style>
+  <div class="form_input">
+        <div class="label">Name:</div>   
+        <div class = "name">
+            <input class = "form" placeholder="Input name" id="name" type="text" name="name" />
+        </div>
+        <div class="label">Email:</div>
+        <div class = "email">    
+            <input class = "form" placeholder="Your email address" id="email" type="text" name="email" />
+        </div>
+        <div class="label">Phone:</div>  
+        <div class = "phone">    
+            <input class = "form" placeholder="+375ZZXXXYYYY" id="phone" type="text" name="phone" />
+        </div>
+    </div>
+</div>
+        <br><br>
+
+    <button id="post">Send</button>
+    <button id="get">Get Data</button>
+    <button id="clear">Clear</button>
+
     <br><br>
-    <div id="ads"></div>
+    <div id="table_div"></div>
+
     <script>
 
- function postdata()
- {
+    document.getElementById('name').addEventListener('blur', checkName);
+  //  document.getElementById('email').addEventListener('blur', checkEmail);
+    document.getElementById('post').addEventListener('click', postData);
+    document.getElementById('get').addEventListener('click', getData);
+    document.getElementById('clear').addEventListener('click', clearForms);
+    
+
+function checkName()
+{
+    var name_str = document.getElementById("name").value;
+    var name_reg = /\d/ig;
+    if(name_str.length == 0)
+    {
+        alert("Please enter valid name");
+        document.getElementById("name").focus();
+    }
+    else
+    {
+        name_str = name_str.match(name_reg);
+        if(name_str != null)
+        {
+            alert("Please enter valid name");
+            document.getElementById("name").focus(); 
+        }
+    }
+}
+
+function checkEmail()
+{
+    var email_str = document.getElementById("email").value;
+    var email_reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if(email_str.length == 0)
+    {
+        alert("Please enter valid email");
+        document.getElementById("email").focus();
+    }
+    else
+    {
+        email_str = email_str.match(email_reg);
+        if(email_str != null)
+        {
+            alert("Please enter valid email");
+            document.getElementById("email").focus(); 
+        }
+    }
+}
+
+function postData()
+{
     var xhr = new XMLHttpRequest();
 
     var email = document.getElementById("email").value;
     var name = document.getElementById("name").value;
     var phone = document.getElementById("phone").value;
     
-    
     var postData = 'name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&phone=' + encodeURIComponent(phone);
+    alert(postData);
     xhr.open('POST', '/items');
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    
+    xhr.send(postData);
     xhr.onreadystatechange = function()
     {
         if(xhr.readyState != 4) return;
         if(xhr.readyState == 4 && xhr.status == 200)
         {
-            clearform();
+            clearForms();
         }
+       
     }
-    xhr.send(postData);
-
-
+        
 }
-function getdata()
- {
- 
-     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://localhost:8888/items', true);
-   xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+function getData()
+{
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/items', true);
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhr.onreadystatechange = function()
     {
         if(xhr.readyState==4 && xhr.status==200)
         {
-            createtable(xhr.responseText);    
+            createList(xhr.responseText);    
         }
     }
     xhr.send(null);
 }
-function createtable(data)
+function createList(data)
 {
-    var h = document.createElement("h3");
+    document.getElementById("table_div").innerHTML = null;
     var data_array = JSON.parse(data);
-for(var i =0; i < data_array.length;i++)
+    if(data_array.length >= 1)
+    {
+        var table = document.createElement("table");
+        table.id = "data_list";
+        table.setAttribute('class', 'list');
+        var head_tr = document.createElement("tr");
+        head_tr.appendChild(document.createElement("td")).innerText = "#";
+        head_tr.appendChild(document.createElement("td")).innerText = "Name";
+        head_tr.appendChild(document.createElement("td")).innerText = "Email";
+        head_tr.appendChild(document.createElement("td")).innerText = "Phone";
+        head_tr.appendChild(document.createElement("td")).innerText = null;
+        head_tr.setAttribute('class', 'border-bottom');
+        table.appendChild(head_tr);
+        document.getElementById("table_div").appendChild(table);
+
+        for(var i = 0; i < data_array.length; i++)
+        {
+            table.appendChild(document.createElement("tr")).id = "tr"+i;
+            document.getElementById("tr"+i).appendChild(document.createElement("td")).innerText = i+1;
+            document.getElementById("tr"+i).appendChild(document.createElement("td")).innerText = data_array[i].name;
+            document.getElementById("tr"+i).appendChild(document.createElement("td")).innerText = data_array[i].email;
+            document.getElementById("tr"+i).appendChild(document.createElement("td")).innerText = data_array[i].phone;
+            document.getElementById("tr"+i).appendChild(document.createElement("td")).id = "td"+i;
+            var rec_id = data_array[i].id;
+            var link = document.createElement('a');
+            link.setAttribute('href', '#');
+            link.setAttribute('id', rec_id);
+            link.appendChild(document.createTextNode("Remove"));
+            document.getElementById("td"+i).appendChild(link);
+        }
+    document.getElementById('data_list').addEventListener('click', getTarget);
+    }
+}
+function clearForms()
 {
-    alert((i+1) + " - " +data_array[i].name);
-}
-    document.getElementById("ads").appendChild(h);
-}
-
-
- function clearform()
- {
     document.getElementById("email").value = null;
     document.getElementById("name").value = null;
-    document.getElementById("phone").value = null;
- }
+    document.getElementById("phone").value = null;    
+}
+function removeItem(id, target)
+{
+    var xhr = new XMLHttpRequest();
+    xhr.open('DELETE', '/items?id='+id, true);
+    var dataDelete = 'id='+id;
+    xhr.onreadystatechange = function()
+    {
+        if(xhr.readyState==4 && xhr.status==200)
+        {
+            removeTableRow(target);
+        }
+    }
+    xhr.send();
+}
+
+function getTarget()
+{
+    if(window.event.target.nodeName == "A")
+    {
+        var target_obj = window.event.target;
+        removeItem(target_obj.id, target_obj);
+    }
+}
+function removeTableRow(target)
+{
+    var parent_obj = target;
+    while(parent_obj)
+    {
+        parent_obj = parent_obj.parentElement;
+        if(parent_obj.nodeName == "TR")
+        {
+            document.getElementById('data_list').removeChild(parent_obj);
+            if(document.getElementById('data_list').childNodes.length == 1)
+                {
+                    document.getElementById('data_list').parentElement.removeChild(document.getElementById('data_list'));
+                }
+            break;
+        }
+    }
+}
+
     </script>
 </body>
 </html>
