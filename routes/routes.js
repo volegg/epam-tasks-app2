@@ -18,5 +18,15 @@ module.exports = [
         pattern: '/items',
         methods: ['GET'],
         action: 'items::getAction'
+    },
+    {
+      pattern: '/script',
+      methods: ['GET'],
+      action: 'script::getAction'
+    },
+    {
+      pattern: '/styles',
+      methods: ['GET'],
+      action: 'styles::getAction'
     }
 ];

@@ -4,6 +4,7 @@ var projectDir = __dirname,
         controllers: projectDir + '/controllers',
         templates: projectDir + '/templates',
         routes: projectDir + '/routes'
+
     };
 
 var Config = {
@@ -18,7 +19,9 @@ var Config = {
     controllers: {
         home: directories.controllers + '/home',
         form: directories.controllers + '/form',
-        items: directories.controllers + '/items'
+        items: directories.controllers + '/items',
+        script: directories.controllers + '/script',
+        styles: directories.controllers + '/styles'
     },
 
     getController: function(name) {
@@ -26,6 +29,7 @@ var Config = {
     },
 
     getRoutes: function() {
+        console.log("getRoutes:"+this.route);
         return require(this.routes);
     }
 };
