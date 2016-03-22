@@ -7,10 +7,10 @@ http.createServer(function(request, response) {
 
     request.setEncoding('utf8');
     pathname = url.parse(request.url).pathname.trim().toLowerCase();
-
+   
     if (pathname.lastIndexOf('/') === pathname.length - 1) {
         pathname = pathname.substring(0, pathname.length - 1);
-    }
+    };
 
     console.log('Requested: ' + pathname);
 

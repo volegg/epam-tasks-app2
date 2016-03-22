@@ -1,25 +1,37 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+    <style type="text/css">
+    body {
+    background-color: white;
+    }
+    label {
+    display: block;
+
+    } 
+</style>
     <title>Form</title>
 </head>
 <body>
     <form id="itemForm">
-        <label>
-            Name:
-            <input type="text" name="name" />
-        </label>
-        <label>
-            Email:
-            <input type="text" name="email" />
-        </label>
-        <label>
-            Phone:
-            <input type="text" name="phone" />
-        </label>
-        <button  type="submit">Submit</button>
+        <fieldset>
+            <legend>Add Item</legend>
+            <label>
+                Name:
+                <input type="text" name="name" />
+            </label>
+            <label>
+                Email:
+                <input type="text" name="email" />
+            </label>
+            <label>
+                Phone:
+                <input type="text" name="phone" />
+            </label>
+            <button  type="submit">Submit</button>
+        </fieldset>
     </form>
     <br>
     <input type="button" id="c_table" value="Create Table"/>
@@ -53,42 +65,58 @@
         rqst.send();
     }
 
-    function addItemToTable(item, table) {
-        var row = document.createElement('tr');
-        for(key in item) {
-            if(item.hasOwnProperty(key) && key != 'id')
-                row.appendChild(document.createElement('td')).innerText = item[key];
-            
-        }
-        
-        table.appendChild(row);
-    }
     function refreshItems(items){
         var t_div = document.getElementById("listItems");
         var table = document.createElement("table");
         var h_row = document.createElement("tr");
+        h_row.appendChild(document.createElement('td')).innerText = '#';
         for(key in items[0]) {
             if(items[0].hasOwnProperty(key) && key != 'id')
                 h_row.appendChild(document.createElement('td')).innerText = key;
         }
+        h_row.appendChild(document.createElement('td')).innerText = 'rmv';
         table.appendChild(h_row);      
         t_div.appendChild(table);
+
         for (var i=0; i<items.length; i++) {
             var h_row = document.createElement('tr');
+            h_row.appendChild(document.createElement('td'));
             for(key in items[i]) {
                 if(items[i].hasOwnProperty(key) && key != 'id')
                     h_row.appendChild(document.createElement('td')).innerText = items[i][key];
             }
+            var rmvAnch = document.createElement("a");
+            rmvAnch.setAttribute("href", "#");
+            rmvAnch.setAttribute("id", items[i].id);
+            rmvAnch.appendChild(document.createTextNode("%"));
+            rmvAnch.addEventListener('click', removeRow, false);
+            var rmvCell = document.createElement('td');
+            rmvCell.appendChild(rmvAnch);
+            h_row.appendChild(rmvCell);
             table.appendChild(h_row);
-            //addItemToTable(items[i], table)
+
         }
         t_div.appendChild(table);
-
     }
 
-    function alertGet(){
-        alert(this.responsetext);
+    function removeRow () {
+         var rId = window.event.target.id;
+         removeData(rId);
+         getItems();
 
+    }
+    function removeData (id) {
+        var rqst = new XMLHttpRequest();
+        rqst.open("DELETE", "/items?id="+id);
+        rqst.onreadystatechange = function(){
+            if (this.readyState != 4)
+                return;
+            if (this.status != 200) {
+                return;
+            } 
+            
+        };
+        rqst.send();
     }
 
     function createTable(){
@@ -110,8 +138,8 @@
 
     form.onsubmit = function(){
         onFormSubmit();
-        //clearForm();
     }
+
     function onFormSubmit(event){
         var rqst = new XMLHttpRequest();
         rqst.open("POST", "/items");
@@ -128,9 +156,9 @@
         }
     function getFormData(form){
         var output = "";
-        for (var i=0; i<form.length; i++){
+        for (var i=1; i<form.length; i++){
             if (form[i].type === 'text'){
-                output += (i==0?'':'&') + form[i].name + '=' + encodeURIComponent(form[i].value);
+                output += (i==1?'':'&') + form[i].name + '=' + encodeURIComponent(form[i].value);
             }
         }
         return output;
