@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>To Do</title>
+    <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+    
+</head>
+<body>
+	<table>
+		<tr>
+			<td valign="top">
+				<input type="text" id="argument"/>
+				<input type="button" id="fl" value="!"/>
+				<div id="result">results:<br></div>
+			</td>
+			<td valign="top">
+				<input type="text" id="palindrome"/>
+				<input type="button" id="pm" value="?"/>
+			</td>
+			<td valign="top">
+				<input type="text" id="u_string"/>
+				<input type="button" id="unique" value="get unique"/>
+				<div id="u_res"></div>
+			</td>
+		</tr>
+	</table>
+
+	<script type="text/javascript">
+//-------------factorial-------------------
+		document.getElementById("fl").addEventListener("click", calc_factorial);
+		
+		function factorial(arg){
+			var n = parseInt(arg);
+			if (n<0 || n!=arg) {return NaN;};
+			return (n==0)? 1 : n*factorial(n-1);
+			
+		}
+		function calc_factorial(){
+			var arg = document.getElementById("argument").value;
+			var res = factorial(arg);
+
+			var p = document.createTextNode(arg+"! ="+res);
+			var res_div = document.getElementById("result");
+			res_div.appendChild(p);
+			res_div.appendChild(document.createElement("br"));
+			document.getElementById("argument").value = '';
+		}
+//END-------------factorial-------------------
+//----------------palindrome------------------
+		document.getElementById("pm").addEventListener("click", checkPalindrome);
+		
+		function checkPalindrome(){
+			var word = document.getElementById("palindrome").value;
+			alert(isPalindrome(word));
+		}
+
+		function isPalindrome(word){
+			
+			var i=0
+			var j = word.length-1;
+			while(j>i && word[i]==word[j]){
+				i++;
+				j--;
+				if (j<=i) return "Palindrome Found";
+			}
+			return "Not a palindrome";
+		}
+//END-------------palindrome------------------
+//----------------unique-chars----------------
+		document.getElementById("unique").addEventListener("click", calc_unique);
+		var hash={};
+		function calc_unique(){
+			var u_s = document.getElementById("u_string").value;
+			var u_res = document.getElementById("u_res");
+			u_res.appendChild(document.createTextNode("Unique char are:"));
+			fillHash(u_s);
+			for (var key in hash){
+				if(hash.hasOwnProperty(key)){
+					u_res.appendChild(document.createTextNode(key));
+					u_res.appendChild(document.createTextNode(", "));
+				}
+			}
+		}
+		function fillHash(string){
+			
+			for (var i = 0; i < string.length; i++) {
+				if(!hash.hasOwnProperty(string[i])){
+					
+					hash[string[i]] = '`';
+				}
+			};
+		}
+//END-------------unique-chars----------------
+	</script>
+</body>
+</html>
