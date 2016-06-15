@@ -115,6 +115,7 @@ function postData()
             if(xhr.readyState == 4 && xhr.status == 200)
             {
                 clearForms();
+                getData();
             }
            
         }
