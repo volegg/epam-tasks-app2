@@ -227,6 +227,7 @@ function removeTableRow(target)
                 {
                     
                  document.getElementById('data_list').parentElement.removeChild(document.getElementById('data_list'));
+                 document.getElementById("table_div").style.visibility='hidden';
                  nodata = true;
 
 
