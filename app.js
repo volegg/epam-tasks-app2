@@ -10,7 +10,7 @@ http.createServer(function(request, response) {
    
     if (pathname.lastIndexOf('/') === pathname.length - 1) {
         pathname = pathname.substring(0, pathname.length - 1);
-    };
+    }
 
     console.log('Requested: ' + pathname);
 
