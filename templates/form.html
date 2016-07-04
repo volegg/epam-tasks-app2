@@ -4,29 +4,99 @@
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
     <style type="text/css">
-    body {
-    background-color: white;
-    }
-    label {
-    display: block;
+        body {
+            background-color: white;
+            font-family: Verdana;
+            font-size: 13px;
+        }
+        
+        label {
+            display: block;
+            padding-bottom: 10px;
+        }
+        input{
+            margin-bottom: 10px;
+            padding: 10px 10px;
+            width:480px;
+        }
+        fieldset{
+            width: 100%;
+            padding: 30px;
+        }
+        .itemsForm{
+            width: 500px;
+            margin: auto;
+        }
+        .input-wrapper{
+            width:100%;
+            font-size:16px;
+        }
+        legend{
+            font-size:20px;
+            font-family: Verdana;
+        }
+        button {
+            width: 100%;
+            background-color: #4da5ff;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            font-family: Verdana;
+            font-size: 14px;
+            margin-top: 10px;
 
-    } 
+        }
+        button:hover {
+            background-color: #1a8bff;
+        }
+        .validateMsg{
+            color:red;
+            margin-bottom: 10px;
+        }
+        .listItems{
+            margin: auto;
+            width:800px;
+            text-align: left;
+            border-spacing: 0;
+            border: 1px solid grey;
+           
+        }         
+        .header{
+            font-size: 16px;
+         }
+        #items-table{
+            margin: auto;
+            width: 100%;
+            max-width: 768px;
+            text-align: left;
+        }
+        #items-table td {
+            border-top: 1px solid #E1E1E1;
+            padding: 1.5%;
+        }
+        #items-table th {
+            padding: 1.5%;
+        }
+
 </style>
+
     <title>Form</title>
 </head>
 <body>
-    <form id="itemForm" name="itemsForm" method="post" action="/items">
+    <form id="itemForm" name="itemsForm"  class='itemsForm' method="post" action="/items">
         <fieldset>
             <legend>Add Item</legend>
-            <div id='fName'>
+            <div id='fName' class='input-wrapper'>
                 <label for = 'iName'>Name:</label>
-                <input id ='iName' type="text" name="name" />
+                <input id ='iName' type="text" name="name" placeholder="Input Name"/>
             </div>
-            <div id = 'fEmail'>
+            <div id = 'fEmail' class='input-wrapper'>
                 <label for = 'iEmail'>Email:</label>
                 <input id = 'iEmail' type="text" name="email" placeholder="your@email.com"/>
             </div>
-            <div id = 'fPhone'>
+            <div id = 'fPhone' class='input-wrapper'>
                 <label for = 'iPhone'>Phone:</label>
                 <input  id = 'iPhone' type="text" name="phone" placeholder="+375ZZXXXYYYY"/>                
             </div>
@@ -36,8 +106,7 @@
 
     <br>
 
-    <input type="button" id="c_items" value="Get Items"/>
-    <div id="listItems"></div>
+    <div id="listItems" class="listItems"></div>
 
     
 <script type="text/javascript">
@@ -98,6 +167,9 @@
     }
 
     function addSingleItem(item, table){
+        if (table.children.length<1) {
+            createTblHeader(table);
+        };
         var h_row = document.createElement('tr');
         h_row.itemId = item.id;
         var rowNo = document.createElement('td');
@@ -112,13 +184,14 @@
         var rmvAnch = document.createElement("a");
         rmvAnch.setAttribute("href", "#");
         rmvAnch.setAttribute("id", item.id);
-        rmvAnch.appendChild(document.createTextNode("%"));
+        rmvAnch.appendChild(document.createTextNode("Remove"));
         rmvAnch.addEventListener('click', removeRow, false);
         var rmvCell = document.createElement('td');
         rmvCell.appendChild(rmvAnch);
         h_row.appendChild(rmvCell);
         table.appendChild(h_row);
     }
+
     function removeSingleItem(itemId){
         var table = document.getElementById('items-table');
         var rows = table.children;
@@ -131,27 +204,33 @@
         }
         return false;
     }
+    function createTblHeader(table){
+        var header = document.createElement('tr');
+        header.setAttribute('class','header');
+        header.appendChild(document.createElement('th')).innerText= "#";
+        header.appendChild(document.createElement('th')).innerText= "Name";
+        header.appendChild(document.createElement('th')).innerText= "Email";
+        header.appendChild(document.createElement('th')).innerText= "Phone";
+        header.appendChild(document.createElement('th')).innerText= "Remove";
+        table.appendChild(header);
+    }
 
     function refreshItems(items){
         var t_div = document.getElementById("listItems");
         t_div.innerHTML = '';
         var table = document.createElement("table");
         table.setAttribute('id','items-table');
-        var h_row = document.createElement("tr");
-        h_row.appendChild(document.createElement('td')).innerText = '#';
-        for(key in items[0]) {
-            if(items[0].hasOwnProperty(key) && key != 'id')
-                h_row.appendChild(document.createElement('td')).innerText = key;
-        }
-        h_row.appendChild(document.createElement('td')).innerText = 'rmv';
-        table.appendChild(h_row);      
-        t_div.appendChild(table);
+        if (items.length>0) {
+            createTblHeader(table);
+            t_div.appendChild(table);
 
-        for (var i=0; i<items.length; i++) {
-            addSingleItem(items[i],table);
+            for (var i=0; i<items.length; i++) {
+                addSingleItem(items[i],table);
 
-        }
-        t_div.appendChild(table);
+            }
+        };
+            t_div.appendChild(table);
+        
     }
 
     function recompileNo(rows){
@@ -165,10 +244,8 @@
          var rId = window.event.target.id;
          removeData(rId);
          removeSingleItem(rId);
-
-         //getItems();
-
     }
+
     function removeData (id) {
         var rqst = new XMLHttpRequest();
         rqst.open("DELETE", "/items?id="+id);
@@ -202,15 +279,11 @@
         var vPhone = form.phone.value;
         wipeMsgs();
         if(!isValidEmail(vEmail)){
-            //if( !vEmail.length == 0 && !!onchange){
-                setValidateMsg('email format', 'fEmail');
-            //}
+            setValidateMsg('Please enter valid email', 'fEmail');
             valid = false;
         }
         if(!isValidPhone(vPhone)){
-            //if( !vPhone.length == 0 && !!onchange){
-                setValidateMsg('phone format', 'fPhone');
-            //}
+            setValidateMsg('Please enter valid phone number', 'fPhone');
             valid = false;
         }
         return valid;

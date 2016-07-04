@@ -34,3 +34,5 @@ node_modules
 
 # Mac OS
 .DS_Store
+*.sublime-workspace
+*.sublime-project
